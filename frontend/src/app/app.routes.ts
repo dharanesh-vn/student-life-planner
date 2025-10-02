@@ -2,11 +2,11 @@ import { Routes, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
 
-// Import Layouts
+// Import Layout Components
 import { HomeComponent } from './components/home/home.component';
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 
-// Import Pages
+// Import All Page Components
 import { RegisterComponent } from './components/auth/register/register.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { ClassManagementComponent } from './components/academic/class-management/class-management.component';
@@ -15,47 +15,56 @@ import { PomodoroTimerComponent } from './components/academic/pomodoro-timer/pom
 import { NotesComponent } from './components/academic/notes/notes.component';
 import { PlannerComponent } from './components/planning/planner/planner.component';
 import { GoalsComponent } from './components/planning/goals/goals.component';
+import { FinanceDashboardComponent } from './components/finance/finance-dashboard/finance-dashboard.component';
 
+// Auth Guard to protect dashboard routes
 const authGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   if (authService.isLoggedIn()) {
-    return true;
+    return true; // Allow access if the user is logged in
   } else {
-    router.navigate(['/']); // Redirect to the Home/Login page
+    router.navigate(['/']); // Redirect to the Home/Login page if not logged in
     return false;
   }
 };
 
 export const routes: Routes = [
-  // CORRECTED: Unprotected routes for the authentication layout
+  // == UNAUTHENTICATED LAYOUT ==
+  // The root path '/' uses the HomeComponent as its layout.
+  // Login and Register will be rendered inside HomeComponent's <router-outlet>.
   { 
     path: '', 
     component: HomeComponent,
-    // These are child routes that will be rendered inside HomeComponent's <router-outlet>
     children: [
-      { path: '', component: LoginComponent }, // The default path '' shows the Login form
-      { path: 'register', component: RegisterComponent } // The path '/register' shows the Register form
+      { path: '', component: LoginComponent }, // Default view is Login
+      { path: 'register', component: RegisterComponent }
     ]
   },
   
-  // Protected routes that use the Dashboard Layout
+  // == AUTHENTICATED DASHBOARD LAYOUT ==
+  // All protected routes are children of the DashboardLayoutComponent.
+  // This ensures the sidebar is always present on these pages.
   {
     path: '',
     component: DashboardLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard], // This entire group is protected
     children: [
       { path: 'academic/assignments', component: AssignmentTrackerComponent },
       { path: 'academic/classes', component: ClassManagementComponent },
       { path: 'academic/pomodoro', component: PomodoroTimerComponent },
       { path: 'academic/courses/:courseId/notes', component: NotesComponent },
+      
       { path: 'planning/planner', component: PlannerComponent },
       { path: 'planning/goals', component: GoalsComponent },
-      // Add a default dashboard route
+      
+      { path: 'finance', component: FinanceDashboardComponent },
+
+      // A default redirect for the dashboard root
       { path: 'dashboard', redirectTo: '/academic/assignments', pathMatch: 'full' },
     ]
   },
 
-  // A final wildcard route to catch any undefined URLs
+  // Wildcard route to catch any undefined URLs and redirect to the home page
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

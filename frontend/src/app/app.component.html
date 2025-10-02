@@ -1,23 +1,11 @@
-<div class="app-container">
-  <nav class="sidebar" *ngIf="isLoggedIn$ | async">
-    <div class="sidebar-header">
-      <h2>Student Planner</h2>
-    </div>
-    <ul class="sidebar-nav">
-      <li class="nav-section-header">Academic</li>
-      <li><a routerLink="/academic/assignments" routerLinkActive="active">Assignments</a></li>
-      <li><a routerLink="/academic/classes" routerLinkActive="active">Courses</a></li>
-      <li><a routerLink="/academic/pomodoro" routerLinkActive="active">Pomodoro Timer</a></li>
-      
-      <li class="nav-section-header">Planning</li>
-      <li><a routerLink="/planning/planner" routerLinkActive="active">Planner</a></li>
-      <li><a routerLink="/planning/goals" routerLinkActive="active">Goals</a></li>
-    </ul>
-    <div class="sidebar-footer">
-      <button (click)="onLogout()">Logout</button>
-    </div>
-  </nav>
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+<!--
+  This is the root of the entire application.
+  Its ONLY purpose is to tell the Angular Router where to render the top-level components
+  from your app.routes.ts file.
+
+  Based on the URL and your login status, the router will inject either:
+  1. The HomeComponent (which contains the "Gradify" branding and the login/register forms).
+  OR
+  2. The DashboardLayoutComponent (which contains the sidebar and all your main feature pages).
+-->
+<router-outlet></router-outlet>

@@ -18,7 +18,8 @@ app.get('/', (req, res) => {
 // Mount Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/academic', require('./routes/academicRoutes'));
-app.use('/api/planning', require('./routes/planningRoutes')); // Added
+app.use('/api/planning', require('./routes/planningRoutes'));
+app.use('/api/finance', require('./routes/financeRoutes')); // <-- ADD THIS LINE
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+// NOTE: The 'Observable' import is not needed in this component as it does not use the isLoggedIn$ property directly.
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -23,6 +23,9 @@ import { AuthService } from '../../services/auth.service';
           <li class="nav-section-header">Planning</li>
           <li><a routerLink="/planning/planner" routerLinkActive="active">Planner</a></li>
           <li><a routerLink="/planning/goals" routerLinkActive="active">Goals</a></li>
+
+          <li class="nav-section-header">Finance</li>
+          <li><a routerLink="/finance" routerLinkActive="active">Dashboard</a></li>
         </ul>
         <div class="sidebar-footer">
           <button (click)="onLogout()">Logout</button>
@@ -32,8 +35,7 @@ import { AuthService } from '../../services/auth.service';
         <router-outlet></router-outlet>
       </main>
     </div>
-  `,
-  // We are moving the styles from app.component.ts to here
+  `, // <-- THIS CLOSING BACKTICK AND COMMA FIX THE ERROR
   styles: [`
     .app-container { display: flex; height: 100vh; }
     .sidebar { width: 260px; background-color: var(--card-background-color); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 1.5rem 0; flex-shrink: 0; box-shadow: var(--shadow); }
@@ -50,6 +52,10 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class DashboardLayoutComponent {
+  // This component doesn't need to check if the user is logged in,
+  // because the authGuard in app.routes.ts prevents this component
+  // from ever being loaded if the user is NOT logged in.
+
   constructor(private authService: AuthService) {}
 
   onLogout(): void {

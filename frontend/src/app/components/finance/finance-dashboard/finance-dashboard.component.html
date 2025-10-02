@@ -1,0 +1,113 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay"><div class="spinner"></div></div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <h2>Finance Dashboard</h2>
+
+  <!-- Top Row: Overview Cards -->
+  <div class="overview-grid">
+    <div class="card overview-card">
+      <h3>Total Balance</h3>
+      <p class="amount" [ngClass]="{'negative': totalBalance < 0}">{{ totalBalance | currency }}</p>
+    </div>
+    <div class="card overview-card">
+      <h3>Monthly Subscriptions</h3>
+      <p class="amount expense">{{ totalMonthlySubscriptions | currency }} / month</p>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="finance-grid">
+    <!-- Left Column: Accounts & Subscriptions -->
+    <div class="left-column">
+      <!-- Accounts Card -->
+      <div class="card">
+        <h3>My Accounts</h3>
+        <div *ngIf="accounts.length === 0" class="empty-state small">Add an account below to start.</div>
+        <ul class="account-list" *ngIf="accounts.length > 0">
+          <li *ngFor="let account of accounts">
+            <span class="account-name">{{ account.accountName }}</span>
+            <span class="account-balance" [ngClass]="{'negative': account.balance < 0}">{{ account.balance | currency }}</span>
+            <button class="delete-btn small" (click)="onDeleteAccount(account._id)" title="Delete Account">×</button>
+          </li>
+        </ul>
+        <form (ngSubmit)="onAddAccount()" class="inline-form">
+          <input type="text" [(ngModel)]="newAccount.accountName" name="accountName" placeholder="New Account Name">
+          <input type="number" step="0.01" [(ngModel)]="newAccount.balance" name="balance" placeholder="Balance">
+          <button type="submit" class="primary">+</button>
+        </form>
+      </div>
+
+      <!-- Subscriptions Card -->
+      <div class="card">
+        <h3>Subscriptions</h3>
+        <div *ngIf="subscriptions.length === 0" class="empty-state small">No subscriptions added yet.</div>
+        <ul class="sub-list" *ngIf="subscriptions.length > 0">
+          <li *ngFor="let sub of subscriptions">
+            <span>{{ sub.name }}</span>
+            <span class="sub-cost">{{ sub.monthlyCost | currency }}</span>
+            <button class="delete-btn small" (click)="onDeleteSubscription(sub._id)" title="Delete Subscription">×</button>
+          </li>
+        </ul>
+        <form (ngSubmit)="onAddSubscription()" class="inline-form">
+          <input type="text" [(ngModel)]="newSubscription.name" name="subName" placeholder="Subscription Name">
+          <input type="number" step="0.01" [(ngModel)]="newSubscription.monthlyCost" name="subCost" placeholder="Cost/mo">
+          <button type="submit" class="primary">+</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column: Transactions -->
+    <div class="right-column">
+      <div class="card">
+        <h3>Log Transaction</h3>
+        <form (ngSubmit)="onAddTransaction()">
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" [(ngModel)]="newTransaction.description" name="transDesc" required>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label>Amount</label>
+              <input type="number" step="0.01" [(ngModel)]="newTransaction.amount" name="transAmount" required>
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <select [(ngModel)]="newTransaction.type" name="transType">
+                <option>Expense</option>
+                <option>Income</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Account</label>
+              <select [(ngModel)]="newTransaction.account" name="transAccount" required>
+                <option value="" disabled>Select Account</option>
+                <option *ngFor="let account of accounts" [value]="account._id">{{ account.accountName }}</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="primary">Log Transaction</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Recent Transactions</h3>
+        <div *ngIf="transactions.length === 0 && !isLoading" class="empty-state">No transactions logged yet.</div>
+        <ul class="transaction-list" *ngIf="transactions.length > 0">
+          <li *ngFor="let trans of transactions">
+            <div class="trans-details">
+              <strong>{{ trans.description }}</strong>
+              <!-- THIS IS THE CORRECTED LINE -->
+              <span *ngIf="trans.account && typeof trans.account === 'object'">{{ trans.account.accountName }} - {{ trans.date | date:'mediumDate' }}</span>
+            </div>
+            <div class="trans-amount" [class.income]="trans.type === 'Income'" [class.expense]="trans.type === 'Expense'">
+              {{ (trans.type === 'Income' ? '+' : '−') + (trans.amount | currency) }}
+              <button class="delete-btn small" (click)="onDeleteTransaction(trans._id)" title="Delete Transaction">×</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
