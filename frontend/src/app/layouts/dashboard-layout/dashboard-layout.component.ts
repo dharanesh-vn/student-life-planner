@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-// NOTE: The 'Observable' import is not needed in this component as it does not use the isLoggedIn$ property directly.
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -12,7 +11,8 @@ import { AuthService } from '../../services/auth.service';
     <div class="app-container">
       <nav class="sidebar">
         <div class="sidebar-header">
-          <h2>Gradify</h2>
+          <!-- UPDATED BRANDING -->
+          <h2>Orbit</h2>
         </div>
         <ul class="sidebar-nav">
           <li class="nav-section-header">Academic</li>
@@ -35,7 +35,7 @@ import { AuthService } from '../../services/auth.service';
         <router-outlet></router-outlet>
       </main>
     </div>
-  `, // <-- THIS CLOSING BACKTICK AND COMMA FIX THE ERROR
+  `,
   styles: [`
     .app-container { display: flex; height: 100vh; }
     .sidebar { width: 260px; background-color: var(--card-background-color); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 1.5rem 0; flex-shrink: 0; box-shadow: var(--shadow); }
@@ -52,10 +52,6 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class DashboardLayoutComponent {
-  // This component doesn't need to check if the user is logged in,
-  // because the authGuard in app.routes.ts prevents this component
-  // from ever being loaded if the user is NOT logged in.
-
   constructor(private authService: AuthService) {}
 
   onLogout(): void {

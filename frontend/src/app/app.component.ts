@@ -4,12 +4,10 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet
-  ],
-  templateUrl: './app.component.html',
-  // No 'styles' or 'styleUrls' are needed here anymore.
+  imports: [RouterOutlet],
+  template: '<router-outlet></router-outlet>'
 })
 export class AppComponent {
-  title = 'Gradify';
+  // UPDATED TITLE
+  title = 'Orbit - Student Planner';
 }

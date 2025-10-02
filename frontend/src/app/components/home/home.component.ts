@@ -9,31 +9,19 @@ import { RouterOutlet } from '@angular/router';
     <div class="auth-container">
       <div class="auth-promo-panel">
         <div class="promo-content">
-          <h1>Gradify</h1>
-          <p>"Making procrastination look productive since... well, now."</p>
+          <!-- UPDATED BRANDING -->
+          <h1>Orbit</h1>
+          <p>"Finally, a single place to view everything you're planning to ignore."</p>
         </div>
       </div>
       <div class="auth-card">
-        <!-- The Login or Register component will be rendered here by the router -->
         <router-outlet></router-outlet>
       </div>
     </div>
   `,
   styles: [`
-    .auth-container { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      height: 100vh; 
-      width: 100%;
-      overflow: hidden;
-    }
-    .auth-card { 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      padding: 3rem 4rem; 
-      background-color: var(--card-background-color); 
-    }
+    .auth-container { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; width: 100%; overflow: hidden; }
+    .auth-card { display: flex; flex-direction: column; justify-content: center; padding: 3rem 4rem; background-color: var(--card-background-color); }
     .auth-promo-panel {
       background-color: var(--primary-color);
       color: white;
@@ -43,7 +31,7 @@ import { RouterOutlet } from '@angular/router';
       align-items: center;
       text-align: center;
       padding: 3rem;
-      background-image: linear-gradient(rgba(137, 103, 179, 0.85), rgba(106, 74, 143, 0.98)), url('https://images.unsplash.com/photo-1524995767962-b52a282b3473?q=80&w=2070');
+      background-image: linear-gradient(rgba(137, 103, 179, 0.9), rgba(106, 74, 143, 0.98)), url('https://images.unsplash.com/photo-1524995767962-b52a282b3473?q=80&w=2070');
       background-size: cover;
       background-position: center;
     }
