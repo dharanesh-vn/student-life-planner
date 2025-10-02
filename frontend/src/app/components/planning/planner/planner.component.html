@@ -1,0 +1,33 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay"><div class="spinner"></div></div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div class="planner-header">
+    <h2>Daily Planner</h2>
+    <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange()">
+  </div>
+
+  <div class="card">
+    <form (ngSubmit)="onAddTask()" class="add-task-form">
+      <input type="text" [(ngModel)]="newTaskTitle" name="newTaskTitle" placeholder="Add a new task for this day...">
+      <button type="submit" class="primary">+</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Tasks for {{ selectedDate | date:'fullDate' }}</h3>
+    <div *ngIf="filteredTasks.length === 0 && !isLoading" class="empty-state">
+      No tasks for this day. Enjoy your free time!
+    </div>
+    <ul class="task-list" *ngIf="filteredTasks.length > 0">
+      <li *ngFor="let task of filteredTasks" [class.completed]="task.isCompleted">
+        <div class="task-content">
+          <input type="checkbox" [checked]="task.isCompleted" (change)="toggleTaskCompletion(task)">
+          <span class="task-title">{{ task.title }}</span>
+        </div>
+        <button class="delete-btn" (click)="onDeleteTask(task._id)">×</button>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.planner-header input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.add-task-form {
+  display: flex;
+  gap: 1rem;
+}
+.add-task-form input {
+  flex-grow: 1;
+}
+.add-task-form button {
+  flex-shrink: 0;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: color 0.2s, text-decoration 0.2s;
+}
+.task-list li:last-child {
+  border-bottom: none;
+}
+.task-list li.completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-color-light);
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.task-content input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #dc3545; /* Red */
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+}

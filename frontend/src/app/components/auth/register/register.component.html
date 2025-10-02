@@ -1,0 +1,27 @@
+<div class="auth-inner-container">
+  <div class="auth-header">
+    <h2>Create Your Account</h2>
+    <p>Get started with your new student planner.</p>
+  </div>
+  <form (ngSubmit)="onRegister()">
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" [(ngModel)]="credentials.name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" [(ngModel)]="credentials.email" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password (min. 6 characters)</label>
+      <input type="password" id="password" name="password" [(ngModel)]="credentials.password" required>
+    </div>
+    <button type="submit" class="primary auth-button">Sign Up</button>
+  </form>
+  <div class="auth-footer">
+    <p>Already have an account? <a routerLink="/">Log in</a></p>
+  </div>
+</div>

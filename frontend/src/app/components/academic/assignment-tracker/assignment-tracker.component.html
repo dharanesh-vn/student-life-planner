@@ -1,0 +1,78 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay"><div class="spinner"></div></div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <h2>Assignment & Exam Tracker</h2>
+
+  <div class="card">
+    <h3>Add a New Assignment</h3>
+    <form (ngSubmit)="onAddAssignment()">
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input id="title" [(ngModel)]="newAssignment.title" name="title" type="text" placeholder="e.g., Chapter 5 Homework" required>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="course">Course *</label>
+          <select id="course" [(ngModel)]="newAssignment.course" name="course" required>
+            <option value="" disabled>Select a course</option>
+            <option *ngFor="let course of courses" [value]="course._id">{{ course.courseName }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dueDate">Due Date *</label>
+          <input id="dueDate" [(ngModel)]="newAssignment.dueDate" name="dueDate" type="date" required>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" [(ngModel)]="newAssignment.status" name="status">
+            <option>To-Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="primary">Add Assignment</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Upcoming Assignments</h3>
+    <div *ngIf="assignments.length === 0 && !isLoading; else assignmentList" class="empty-state">
+      No upcoming assignments. Add one to get started!
+    </div>
+    <ng-template #assignmentList>
+      <table class="assignment-table">
+        <thead>
+          <tr>
+            <th class="col-done">Done</th>
+            <th>Title</th>
+            <th>Course</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assignment of assignments" [class.is-done]="assignment.status === 'Done'">
+            <td>
+              <input type="checkbox" [checked]="assignment.status === 'Done'" (change)="toggleDone(assignment)">
+            </td>
+            <td><strong>{{ assignment.title }}</strong></td>
+            <td *ngIf="assignment.course && typeof assignment.course === 'object'">{{ assignment.course.courseName }}</td>
+            <td>{{ assignment.dueDate | date:'mediumDate' }}</td>
+            <td>
+              <span class="status" [ngClass]="assignment.status.replace(' ', '-').toLowerCase()">
+                {{ assignment.status }}
+              </span>
+            </td>
+            <td>
+              <button class="delete-btn" (click)="onDelete(assignment._id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </div>
+</div>

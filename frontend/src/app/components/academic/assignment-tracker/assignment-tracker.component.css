@@ -1,0 +1,78 @@
+.form-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1.5rem;
+}
+.empty-state {
+text-align: center;
+color: var(--text-color-light);
+padding: 3rem 1rem;
+}
+.assignment-table {
+width: 100%;
+border-collapse: collapse;
+}
+.assignment-table th,
+.assignment-table td {
+padding: 1rem;
+text-align: left;
+border-bottom: 1px solid var(--border-color);
+vertical-align: middle;
+}
+.assignment-table th {
+font-weight: 500;
+color: var(--text-color-light);
+font-size: 0.9rem;
+text-transform: uppercase;
+}
+.assignment-table tbody tr:last-child td {
+border-bottom: none;
+}
+.status {
+padding: 0.25rem 0.75rem;
+border-radius: 12px;
+font-weight: 500;
+font-size: 0.85rem;
+white-space: nowrap;
+}
+.status.to-do {
+background-color: rgba(255, 152, 0, 0.2);
+color: #c26c00;
+}
+.status.in-progress {
+background-color: rgba(63, 81, 181, 0.2);
+color: var(--primary-color);
+}
+.status.done {
+background-color: rgba(40, 167, 69, 0.2);
+color: #1c7430;
+}
+.delete-btn {
+background: none;
+border: none;
+color: #dc3545;
+cursor: pointer;
+font-weight: 500;
+padding: 0.25rem;
+}
+.delete-btn:hover {
+text-decoration: underline;
+}
+.col-done {
+width: 60px;
+text-align: center;
+}
+tr.is-done {
+color: var(--text-color-light);
+text-decoration: line-through;
+}
+tr.is-done strong {
+font-weight: normal;
+}
+td input[type="checkbox"] {
+display: block;
+margin: 0 auto;
+width: 18px;
+height: 18px;
+cursor: pointer;
+}

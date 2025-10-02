@@ -1,0 +1,156 @@
+/* Condensed grid for the form */
+.form-grid-condensed {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+button.secondary {
+  background-color: transparent;
+  color: var(--text-color-light);
+  border: 1px solid var(--border-color);
+}
+button.secondary:hover {
+  background-color: #f0f0f0;
+}
+
+/* Grid for the course cards */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+} /* <-- THIS IS THE MISSING CLOSING BRACE THAT WAS ADDED */
+
+/* New Course Card Styling */
+.course-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.course-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: white;
+}
+
+.course-card-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.course-card-body {
+  padding: 1.5rem;
+  background-color: var(--card-background-color);
+  flex-grow: 1;
+}
+
+.course-card-body p {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color-light);
+}
+
+.course-card-footer {
+  padding: 1rem 1.5rem;
+  background-color: #f9f9f9;
+  border-top: 1px solid var(--border-color);
+  text-align: right;
+}
+
+.notes-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.course-actions button {
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.8;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+}
+
+.course-actions button:hover {
+  opacity: 1;
+}
+
+/* Color variants for the cards */
+.color-0 { border-top: 5px solid #4285F4; } /* Blue */
+.color-1 { border-top: 5px solid #DB4437; } /* Red */
+.color-2 { border-top: 5px solid #F4B400; } /* Yellow */
+.color-3 { border-top: 5px solid #0F9D58; } /* Green */
+.color-4 { border-top: 5px solid #9C27B0; } /* Purple */
+.color-5 { border-top: 5px solid #FF6D00; } /* Orange */
+
+.color-0 .course-card-header { background-color: #4285F4; }
+.color-1 .course-card-header { background-color: #DB4437; }
+.color-2 .course-card-header { background-color: #F4B400; }
+.color-3 .course-card-header { background-color: #0F9D58; }
+.color-4 .course-card-header { background-color: #9C27B0; }
+.color-5 .course-card-header { background-color: #FF6D00; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-color-light);
+  padding: 3rem 1rem;
+}
+
+/* Styles for loading spinner and messages */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}

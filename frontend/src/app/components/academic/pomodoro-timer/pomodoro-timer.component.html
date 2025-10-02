@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="header-with-action">
+    <h2>Pomodoro Timer</h2>
+    <button class="settings-btn" (click)="showSettings = !showSettings">Settings</button>
+  </div>
+
+  <!-- Settings Card -->
+  <div class="card settings-card" *ngIf="showSettings">
+    <h3>Customize Durations (minutes)</h3>
+    <div class="settings-grid">
+      <div class="form-group">
+        <label for="work">Work Session</label>
+        <input id="work" type="number" min="1" [(ngModel)]="workDuration">
+      </div>
+      <div class="form-group">
+        <label for="short">Short Break</label>
+        <input id="short" type="number" min="1" [(ngModel)]="shortBreakDuration">
+      </div>
+      <div class="form-group">
+        <label for="long">Long Break</label>
+        <input id="long" type="number" min="1" [(ngModel)]="longBreakDuration">
+      </div>
+    </div>
+    <button class="primary" (click)="applySettings()">Apply & Reset</button>
+  </div>
+
+  <!-- Timer Card -->
+  <div class="card timer-card" [ngClass]="timerState">
+    <div class="timer-display">
+      <span>{{ minutes | number:'2.0' }}</span>
+      <span>:</span>
+      <span>{{ seconds | number:'2.0' }}</span>
+    </div>
+    <div class="timer-state">
+      {{ formattedState }}
+    </div>
+    <div class="timer-controls">
+      <button (click)="toggleTimer()" class="primary">
+        {{ timerOn ? 'Pause' : 'Start' }}
+      </button>
+      <button (click)="resetTimer()" class="secondary">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- Instructions Card -->
+  <div class="card instructions-card">
+    <h3>How it works</h3>
+    <ol>
+      <li>Set a goal for this study session.</li>
+      <li>Start the timer and work for 25 minutes without distractions.</li>
+      <li>When the alarm sounds, take a 5-minute break.</li>
+      <li>After four work cycles, take a longer 15-minute break.</li>
+      <li>Repeat!</li>
+    </ol>
+  </div>
+</div>

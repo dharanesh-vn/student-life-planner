@@ -1,0 +1,96 @@
+textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: inherit;
+  resize: vertical;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+button.secondary {
+  background-color: transparent;
+  color: var(--text-color-light);
+  border: 1px solid var(--border-color);
+}
+button.secondary:hover {
+  background-color: #f0f0f0;
+}
+.goal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.goal-card {
+  background-color: #f9f9f9;
+  border-left: 5px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+}
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+.goal-header h4 {
+  margin: 0;
+}
+.goal-description {
+  color: var(--text-color-light);
+  white-space: pre-wrap;
+}
+.goal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+.goal-category {
+  font-weight: 500;
+  font-size: 0.9rem;
+  background-color: #e0e0e0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+.goal-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+.edit-btn {
+  color: var(--primary-color);
+}
+.delete-btn {
+  color: #dc3545;
+}
+
+/* Status Badge Styling */
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.status.not-started {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #495057;
+}
+.status.in-progress {
+  background-color: rgba(63, 81, 181, 0.2);
+  color: var(--primary-color);
+}
+.status.achieved {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #1c7430;
+}

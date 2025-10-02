@@ -1,0 +1,70 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay"><div class="spinner"></div></div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <h2>Annual Goals</h2>
+
+  <div class="card">
+    <h3>{{ isEditMode ? 'Edit Goal' : 'Add a New Goal' }}</h3>
+    <form (ngSubmit)="onSubmitGoal()">
+      <div class="form-group">
+        <label for="title">Goal Title *</label>
+        <input id="title" type="text" [(ngModel)]="goalData.title" name="title" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="goalData.description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" [(ngModel)]="goalData.category" name="category">
+            <option>Academic</option>
+            <option>Personal</option>
+            <option>Career</option>
+            <option>Health</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" [(ngModel)]="goalData.status" name="status">
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Achieved</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="primary">{{ isEditMode ? 'Update Goal' : 'Add Goal' }}</button>
+        <button type="button" *ngIf="isEditMode" (click)="resetForm()" class="secondary">Cancel Edit</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>My Goals</h3>
+    <div *ngIf="goals.length === 0 && !isLoading" class="empty-state">
+      You haven't set any goals yet. Add one to get started!
+    </div>
+    <div *ngIf="goals.length > 0" class="goal-grid">
+      <div class="goal-card" *ngFor="let goal of goals">
+        <div class="goal-header">
+          <h4>{{ goal.title }}</h4>
+          <span class="status" [ngClass]="goal.status.replace(' ', '-').toLowerCase()">
+            {{ goal.status }}
+          </span>
+        </div>
+        <p class="goal-description">{{ goal.description }}</p>
+        <div class="goal-footer">
+          <span class="goal-category">{{ goal.category }}</span>
+          <div class="goal-actions">
+            <button class="edit-btn" (click)="onEdit(goal)">Edit</button>
+            <button class="delete-btn" (click)="onDelete(goal._id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

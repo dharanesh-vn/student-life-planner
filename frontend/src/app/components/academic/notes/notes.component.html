@@ -1,0 +1,37 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay"><div class="spinner"></div></div>
+  <h2 *ngIf="course">Notes for {{ course.courseName }}</h2>
+
+  <div class="notes-container">
+    <!-- Left Column: List of Notes -->
+    <div class="notes-list-pane">
+      <button (click)="createNewNote()" class="new-note-btn">New Note +</button>
+      <ul class="notes-list">
+        <li *ngFor="let note of notes" (click)="selectNote(note)" [class.active]="note._id === selectedNote?._id">
+          <span class="note-title">{{ note.title }}</span>
+          <span class="note-date">{{ note.updatedAt | date:'short' }}</span>
+        </li>
+        <div *ngIf="notes.length === 0 && !isLoading" class="empty-state">No notes yet.</div>
+      </ul>
+    </div>
+
+    <!-- Right Column: Note Editor -->
+    <div class="note-editor-pane">
+      <div *ngIf="selectedNote; else noNoteSelected" class="editor-wrapper">
+        <div class="editor-header">
+          <input type="text" [(ngModel)]="selectedNote.title" placeholder="Note Title" class="title-input"/>
+          <div class="editor-actions">
+            <button (click)="saveNote()" class="primary">Save</button>
+            <button *ngIf="selectedNote._id" (click)="deleteNote()" class="delete-btn">Delete</button>
+          </div>
+        </div>
+        <textarea [(ngModel)]="selectedNote.content" placeholder="Start writing your notes here..."></textarea>
+      </div>
+      <ng-template #noNoteSelected>
+        <div class="empty-state">
+          Select a note to view or create a new one.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
