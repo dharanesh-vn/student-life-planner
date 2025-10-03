@@ -12,14 +12,15 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Student Life Planner API is running...');
+  res.send('Orbit Student Planner API is running...');
 });
 
 // Mount Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/academic', require('./routes/academicRoutes'));
 app.use('/api/planning', require('./routes/planningRoutes'));
-app.use('/api/finance', require('./routes/financeRoutes')); // <-- ADD THIS LINE
+app.use('/api/finance', require('./routes/financeRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes')); // Added this line
 
 const PORT = process.env.PORT || 5000;
 

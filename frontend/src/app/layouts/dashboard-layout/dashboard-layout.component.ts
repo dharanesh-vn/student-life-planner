@@ -11,19 +11,17 @@ import { AuthService } from '../../services/auth.service';
     <div class="app-container">
       <nav class="sidebar">
         <div class="sidebar-header">
-          <!-- UPDATED BRANDING -->
           <h2>Orbit</h2>
         </div>
         <ul class="sidebar-nav">
+          <li><a routerLink="/ai-assistant" routerLinkActive="active" class="ai-link">✨ AI Assistant</a></li>
           <li class="nav-section-header">Academic</li>
           <li><a routerLink="/academic/assignments" routerLinkActive="active">Assignments</a></li>
           <li><a routerLink="/academic/classes" routerLinkActive="active">Courses</a></li>
           <li><a routerLink="/academic/pomodoro" routerLinkActive="active">Pomodoro Timer</a></li>
-          
           <li class="nav-section-header">Planning</li>
           <li><a routerLink="/planning/planner" routerLinkActive="active">Planner</a></li>
           <li><a routerLink="/planning/goals" routerLinkActive="active">Goals</a></li>
-
           <li class="nav-section-header">Finance</li>
           <li><a routerLink="/finance" routerLinkActive="active">Dashboard</a></li>
         </ul>
@@ -49,11 +47,13 @@ import { AuthService } from '../../services/auth.service';
     .sidebar-footer button:hover { background-color: #f0f0f0; }
     .main-content { flex-grow: 1; padding: 2.5rem; overflow-y: auto; background-color: var(--background-color); }
     .nav-section-header { padding: 1.5rem 1.5rem 0.5rem; font-size: 0.8rem; font-weight: 600; color: var(--text-color-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .sidebar-nav a.ai-link { background-color: var(--primary-color); color: white; font-weight: 600; margin-bottom: 1.5rem; }
+    .sidebar-nav a.ai-link:hover { background-color: var(--primary-color-dark); }
+    .sidebar-nav a.ai-link.active { background-color: var(--primary-color-dark); }
   `]
 })
 export class DashboardLayoutComponent {
   constructor(private authService: AuthService) {}
-
   onLogout(): void {
     this.authService.logout();
   }

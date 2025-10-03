@@ -1,0 +1,60 @@
+<div class="container">
+  <h2>✨ AI Study Assistant</h2>
+  <p class="subtitle">Select a course, and the AI will generate powerful study materials from your notes in seconds.</p>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div class="card setup-card">
+    <div class="form-group">
+      <label for="course-select">1. Select a Course to Study From</label>
+      <select id="course-select" [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseSelectionChange()">
+        <option value="" disabled>-- Choose one of your courses --</option>
+        <option *ngFor="let course of courses" [value]="course._id">{{ course.courseName }}</option>
+      </select>
+      <div *ngIf="courses.length === 0 && !isLoading" class="info-text">
+        You don't have any courses yet. Go to the "Courses" page to add one.
+      </div>
+    </div>
+
+    <!-- THIS IS THE NEW, ORGANIZED NOTES PREVIEW SECTION -->
+    <div class="notes-preview-section" *ngIf="selectedCourseId">
+      <label>Notes to be Processed</label>
+      <div *ngIf="isLoadingNotes" class="notes-loading">
+        <div class="mini-spinner"></div>
+        <span>Loading notes...</span>
+      </div>
+      <div *ngIf="!isLoadingNotes && notesForSelectedCourse.length > 0" class="notes-list-container">
+        <ul class="notes-list">
+          <li *ngFor="let note of notesForSelectedCourse" class="note-item">
+            <span class="note-icon">&#128196;</span>
+            <span>{{ note.title }}</span>
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="!isLoadingNotes && notesForSelectedCourse.length === 0" class="info-text">
+        This course has no notes. Please <a [routerLink]="['/academic/courses', selectedCourseId, 'notes']">add some notes</a> to use the AI Assistant.
+      </div>
+    </div>
+
+    <div class="actions-group">
+      <label>2. Choose an Action</label>
+      <div class="action-buttons">
+        <button class="primary" (click)="onProcessRequest('summarize')" [disabled]="isLoading || !selectedCourseId || notesForSelectedCourse.length === 0">Generate Summary</button>
+        <button class="primary" (click)="onProcessRequest('key-concepts')" [disabled]="isLoading || !selectedCourseId || notesForSelectedCourse.length === 0">Extract Key Concepts</button>
+        <button class="primary" (click)="onProcessRequest('quiz')" [disabled]="isLoading || !selectedCourseId || notesForSelectedCourse.length === 0">Create Practice Quiz</button>
+        <button class="primary" (click)="onProcessRequest('flashcards')" [disabled]="isLoading || !selectedCourseId || notesForSelectedCourse.length === 0">Generate Flashcards</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card result-card" *ngIf="isLoading || aiResult">
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Your AI assistant is thinking... This may take a moment.</p>
+    </div>
+    <div *ngIf="aiResult && !isLoading">
+      <h3>{{ formatActionName(currentAction) }}</h3>
+      <markdown [data]="aiResult" class="ai-response"></markdown>
+    </div>
+  </div>
+</div>
