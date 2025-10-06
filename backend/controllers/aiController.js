@@ -1,47 +1,43 @@
 const Note = require('../models/Note');
-const OpenAI = require('openai');
+const axios = require('axios');
 
-// Initialize the OpenAI client with the API key from the .env file
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const callHuggingFaceAI = async (modelUrl, prompt) => {
+  const apiKey = process.env.HUGGING_FACE_API_KEY;
+  if (!apiKey) {
+    throw new Error('HUGGING_FACE_API_KEY is not set in .env file.');
+  }
 
-// This helper function builds the specific instruction (prompt) for the AI model.
-const buildPrompt = (action, notesText) => {
-  switch (action) {
-    case 'summarize':
-      return `
-        You are an expert academic assistant. Your task is to create a concise, high-level summary from the following student's notes.
-        Generate a summary that covers the main topics and key arguments. Use bullet points and markdown for clarity.
-        The notes are:\n\n---\n\n${notesText}
-      `;
-    case 'key-concepts':
-      return `
-        You are a highly efficient study guide creator. Your task is to analyze the following notes and identify the 10 most important key concepts, terms, or names. 
-        For each concept, provide a brief, one-sentence definition. Present the output as a clean list with the concept in bold markdown. Example: "**Photosynthesis:** The process by which green plants use sunlight to synthesize foods."
-        The notes are:\n\n---\n\n${notesText}
-      `;
-    case 'quiz':
-      return `
-        You are a helpful teaching assistant creating a practice quiz. Your task is to generate a 5-question multiple-choice quiz based on the provided notes.
-        Each question should have four possible answers (A, B, C, D), and you MUST indicate the correct answer by adding "**Correct Answer:**" followed by the correct letter after the options. Use markdown for formatting.
-        The notes are:\n\n---\n\n${notesText}
-      `;
-    case 'flashcards':
-      return `
-        You are a flashcard generation tool. Your task is to read the following notes and create a list of 10 flashcards.
-        For each flashcard, provide a "Front" (a term or question) and a "Back" (the definition or answer). Format the output clearly for each card using markdown's horizontal rule (---) to separate them. Example:
-        **Front:** Photosynthesis
-        **Back:** The process by which green plants use sunlight to synthesize foods from carbon dioxide and water.
-        ---
-        The notes are:\n\n---\n\n${notesText}
-      `;
-    default:
-      // This should ideally not be reached if the frontend sends a valid action
-      return `Please process the following text: ${notesText}`;
+  try {
+    const response = await axios.post(
+      modelUrl,
+      { inputs: prompt },
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    
+    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      // Handles responses from BART (summarization) and Keyphrase models
+      return response.data[0].summary_text || response.data[0].generated_text || JSON.stringify(response.data);
+    } else {
+      throw new Error('Invalid response structure from Hugging Face.');
+    }
+  } catch (error) {
+    console.error(`Axios error calling ${modelUrl}:`, error.response ? error.response.data : error.message);
+    const errorMessage = error.response?.data?.error || 'Failed to fetch from Hugging Face API.';
+    if (typeof errorMessage === 'string' && errorMessage.includes('is currently loading')) {
+      throw new Error('The AI model is warming up. Please try again in 20-30 seconds.');
+    }
+    throw new Error(errorMessage);
   }
 };
 
+// ===================================================================================
+// MAIN CONTROLLER - USES ONLY THE PROVEN, WORKING MODELS
+// ===================================================================================
 exports.processNotesWithAI = async (req, res) => {
   try {
     const { courseId, action } = req.body;
@@ -55,25 +51,59 @@ exports.processNotesWithAI = async (req, res) => {
     }
     const notesText = notes.map(note => `Note Title: ${note.title}\n\n${note.content}`).join('\n\n---\n\n');
 
-    const prompt = buildPrompt(action, notesText);
+    let modelEndpoint = '';
+    let prompt = notesText;
 
-    // Call the OpenAI API using the installed library
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "gpt-3.5-turbo", // A powerful and cost-effective model that is reliably available
-    });
+    // FINAL MODEL STRATEGY:
+    switch (action) {
+      case 'summarize':
+        // USE THE PROVEN SUMMARIZER
+        modelEndpoint = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
+        prompt = notesText;
+        break;
+      
+      case 'key-concepts':
+        // USE THE PROVEN KEYPHRASE EXTRACTOR
+        modelEndpoint = 'https://api-inference.huggingface.co/models/ml6team/keyphrase-extraction-distilbert-inspec';
+        prompt = notesText;
+        break;
 
-    // Extract the AI's response text from the correct location in the response object
-    const aiText = completion.choices[0].message.content;
+      case 'quiz':
+        // USE THE WORKING SUMMARIZER with a specific prompt
+        modelEndpoint = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
+        // We trick the summarizer by asking it to "summarize" in the form of a quiz
+        prompt = `Based on the following text, create a 3-question multiple-choice quiz with answers. Text: ${notesText}`;
+        break;
+      
+      case 'flashcards':
+        // USE THE WORKING SUMMARIZER with a specific prompt
+        modelEndpoint = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
+        // We ask it to "summarize" in the format of flashcards
+        prompt = `Generate 5 flashcards with a "Front:" and a "Back:" from the following text. Text: ${notesText}`;
+        break;
 
-    if (!aiText) {
-      throw new Error("AI returned an empty or invalid response.");
+      default:
+        return res.status(400).json({ message: 'Invalid action specified.' });
     }
 
-    res.status(200).json({ result: aiText });
+    const aiResult = await callHuggingFaceAI(modelEndpoint, prompt);
+    
+    let formattedResult = aiResult;
+    // Format the key-concepts result as it returns a JSON string
+    if (action === 'key-concepts' && typeof aiResult === 'string' && aiResult.startsWith('[')) {
+        try {
+            const concepts = JSON.parse(aiResult);
+            if (Array.isArray(concepts)) {
+              // Just show the word, which is what this model is good at
+              formattedResult = concepts.map((item) => `- **${item.word}**`).join('\n');
+            }
+        } catch(e) { /* Fallback to raw text if JSON parsing fails */ }
+    }
+
+    res.status(200).json({ result: formattedResult });
 
   } catch (error) {
-    console.error("AI processing error:", error);
-    res.status(500).json({ message: 'An error occurred while communicating with the AI service.' });
+    console.error("AI processing error in controller:", error.message);
+    res.status(500).json({ message: error.message || 'An error occurred while communicating with the AI service.' });
   }
 };
