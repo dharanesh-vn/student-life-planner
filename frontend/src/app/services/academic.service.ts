@@ -3,13 +3,22 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+// Interface for a single schedule entry
+export interface ScheduleItem {
+  day: string;
+  startTime: string;
+  endTime: string;
+}
+
+// Updated Course interface to match the new backend model
 export interface Course {
   _id?: string;
   courseName: string;
-  instructor: string;
-  scheduleDays: string[];
-  scheduleStartTime: string;
-  scheduleEndTime: string;
+  courseId?: string;
+  instructor?: string;
+  startDate?: string;
+  endDate?: string;
+  schedule: ScheduleItem[];
 }
 
 export interface Assignment {
@@ -45,7 +54,7 @@ export class AcademicService {
   getCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.apiUrl}/courses`, { headers: this.getAuthHeaders() });
   }
-  addCourse(course: Course): Observable<Course> {
+  addCourse(course: Partial<Course>): Observable<Course> {
     return this.http.post<Course>(`${this.apiUrl}/courses`, course, { headers: this.getAuthHeaders() });
   }
   updateCourse(id: string, courseData: Partial<Course>): Observable<Course> {

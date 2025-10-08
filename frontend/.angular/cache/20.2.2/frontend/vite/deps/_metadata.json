@@ -1,67 +1,67 @@
 {
-  "hash": "c4e0d673",
-  "configHash": "2265ffdd",
-  "lockfileHash": "0f605702",
-  "browserHash": "721f8533",
+  "hash": "d24d5ca5",
+  "configHash": "dcc09fe3",
+  "lockfileHash": "649a01d8",
+  "browserHash": "dc5b750c",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "d90a3d40",
+      "fileHash": "c356717c",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "2d3f69d3",
+      "fileHash": "ffc7cc0f",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "998717e6",
+      "fileHash": "7f87107a",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "436a7665",
+      "fileHash": "fcd602e3",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "80226469",
+      "fileHash": "0aa2d2da",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "4e5e94ba",
+      "fileHash": "7f1fc7b8",
       "needsInterop": false
     },
     "date-fns": {
       "src": "../../../../../../node_modules/date-fns/index.js",
       "file": "date-fns.js",
-      "fileHash": "79ffa867",
+      "fileHash": "9cadbccc",
       "needsInterop": false
     },
     "ngx-markdown": {
       "src": "../../../../../../node_modules/ngx-markdown/fesm2022/ngx-markdown.mjs",
       "file": "ngx-markdown.js",
-      "fileHash": "da6b5252",
+      "fileHash": "bc3718fc",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "136918dd",
+      "fileHash": "32212c44",
       "needsInterop": false
     },
     "zone.js": {
       "src": "../../../../../../node_modules/zone.js/fesm2015/zone.js",
       "file": "zone__js.js",
-      "fileHash": "49d93960",
+      "fileHash": "69a7b310",
       "needsInterop": true
     }
   },

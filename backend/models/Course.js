@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+// A sub-schema for individual schedule entries
+const ScheduleItemSchema = new mongoose.Schema({
+  day: { type: String, required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+}, { _id: false });
+
 const CourseSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,23 +18,21 @@ const CourseSchema = new mongoose.Schema({
     required: [true, 'Please add a course name'],
     trim: true,
   },
+  courseId: {
+    type: String,
+    trim: true,
+  },
   instructor: {
     type: String,
     trim: true,
   },
-  // New structured format for schedule
-  scheduleDays: {
-    type: [String], // An array of strings like ['Monday', 'Wednesday']
-    default: [],
+  startDate: {
+    type: Date,
   },
-  scheduleStartTime: {
-    type: String, // e.g., "10:00"
-    trim: true,
+  endDate: {
+    type: Date,
   },
-  scheduleEndTime: {
-    type: String, // e.g., "11:00"
-    trim: true,
-  },
+  schedule: [ScheduleItemSchema],
 }, {
   timestamps: true,
 });

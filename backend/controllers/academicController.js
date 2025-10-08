@@ -13,12 +13,20 @@ exports.getCourses = async (req, res) => {
 };
 exports.addCourse = async (req, res) => {
   try {
-    const { courseName, instructor, scheduleDays, scheduleStartTime, scheduleEndTime } = req.body;
+    const { courseName, courseId, instructor, startDate, endDate, schedule } = req.body;
     if (!courseName) {
       return res.status(400).json({ message: 'Course name is required' });
     }
-    const course = new Course({ user: req.user.id, courseName, instructor, scheduleDays, scheduleStartTime, scheduleEndTime });
-    const createdCourse = await course.save();
+    const newCourse = new Course({ 
+      user: req.user.id, 
+      courseName, 
+      courseId, 
+      instructor, 
+      startDate, 
+      endDate, 
+      schedule 
+    });
+    const createdCourse = await newCourse.save();
     res.status(201).json(createdCourse);
   } catch (error) {
     res.status(500).json({ message: 'Server error adding course' });
@@ -26,16 +34,17 @@ exports.addCourse = async (req, res) => {
 };
 exports.updateCourse = async (req, res) => {
   try {
-    const { courseName, instructor, scheduleDays, scheduleStartTime, scheduleEndTime } = req.body;
+    const { courseName, courseId, instructor, startDate, endDate, schedule } = req.body;
     let course = await Course.findOne({ _id: req.params.id, user: req.user.id });
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
-    course.courseName = courseName !== undefined ? courseName : course.courseName;
-    course.instructor = instructor !== undefined ? instructor : course.instructor;
-    course.scheduleDays = scheduleDays !== undefined ? scheduleDays : course.scheduleDays;
-    course.scheduleStartTime = scheduleStartTime !== undefined ? scheduleStartTime : course.scheduleStartTime;
-    course.scheduleEndTime = scheduleEndTime !== undefined ? scheduleEndTime : course.scheduleEndTime;
+    course.courseName = courseName;
+    course.courseId = courseId;
+    course.instructor = instructor;
+    course.startDate = startDate;
+    course.endDate = endDate;
+    course.schedule = schedule;
     const updatedCourse = await course.save();
     res.status(200).json(updatedCourse);
   } catch (error) {
@@ -49,8 +58,9 @@ exports.deleteCourse = async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
     await Assignment.deleteMany({ course: req.params.id, user: req.user.id });
+    await Note.deleteMany({ course: req.params.id, user: req.user.id });
     await course.deleteOne();
-    res.status(200).json({ message: 'Course and associated assignments removed' });
+    res.status(200).json({ message: 'Course and associated data removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server error deleting course' });
   }

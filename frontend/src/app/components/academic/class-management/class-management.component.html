@@ -7,39 +7,89 @@
 
   <div class="card">
     <h3>{{ isEditMode ? 'Edit Course' : 'Add a New Course' }}</h3>
-    <form (ngSubmit)="onSubmitCourse()">
-      <div class="form-group">
-        <label for="courseName">Course Name *</label>
-        <input id="courseName" [(ngModel)]="courseData.courseName" name="courseName" type="text" required>
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmitCourse()">
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="courseName">Course Name *</label>
+          <input id="courseName" type="text" formControlName="courseName" placeholder="e.g., Introduction to Physics">
+          <div *ngIf="courseName?.invalid && (courseName?.dirty || courseName?.touched)" class="validation-error">
+            <small *ngIf="courseName?.errors?.['required']">Course name is required.</small>
+            <small *ngIf="courseName?.errors?.['pattern']">Must only contain letters and spaces.</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="courseId">Course ID</label>
+          <input id="courseId" type="text" formControlName="courseId" placeholder="e.g., PHYS-101">
+           <div *ngIf="courseId?.invalid && (courseId?.dirty || courseId?.touched)" class="validation-error">
+            <small *ngIf="courseId?.errors?.['pattern']">Can only contain letters, numbers, and dashes.</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="instructor">Instructor</label>
+          <input id="instructor" type="text" formControlName="instructor" placeholder="e.g., Dr. Smith">
+           <div *ngIf="instructor?.invalid && (instructor?.dirty || instructor?.touched)" class="validation-error">
+            <small *ngIf="instructor?.errors?.['pattern']">Must only contain letters and spaces.</small>
+          </div>
+        </div>
       </div>
-      <div class="form-group" style="margin-top: 1.25rem;">
-        <label for="instructor">Instructor</label>
-        <input id="instructor" [(ngModel)]="courseData.instructor" name="instructor" type="text">
+
+      <div class="form-grid" formGroupName="dates">
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input id="startDate" type="date" formControlName="startDate" [min]="minDate">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input id="endDate" type="date" formControlName="endDate" [min]="dates?.get('startDate')?.value || minDate">
+          <div *ngIf="dates?.errors?.['endDateInvalid'] && (dates?.get('endDate')?.dirty || dates?.get('endDate')?.touched)" class="validation-error">
+            <small>End date must be after the start date.</small>
+          </div>
+        </div>
       </div>
 
       <div class="schedule-section">
-        <label>Schedule</label>
-        <div class="day-selector">
-          <label *ngFor="let day of days" class="day-chip" [class.selected]="daySelection[day]">
-            <input type="checkbox" [(ngModel)]="daySelection[day]" [name]="day">
-            {{ day.substring(0, 3) }}
-          </label>
+        <div class="schedule-header">
+          <label>Class Schedule</label>
+          <button type="button" (click)="addScheduleItem()" class="add-schedule-btn">+ Add Time Slot</button>
         </div>
-        <div class="time-inputs">
-          <div class="form-group">
-            <label for="startTime">Start Time</label>
-            <input id="startTime" type="time" [(ngModel)]="courseData.scheduleStartTime" name="startTime">
-          </div>
-          <div class="form-group">
-            <label for="endTime">End Time</label>
-            <input id="endTime" type="time" [(ngModel)]="courseData.scheduleEndTime" name="endTime">
+        <div formArrayName="schedule" class="schedule-list">
+          <div *ngIf="schedule.controls.length === 0" class="empty-schedule">No class times have been added.</div>
+          
+          <div *ngFor="let item of schedule.controls; let i = index" [formGroupName]="i" class="schedule-row">
+            <select class="day-select" formControlName="day">
+              <option value="" disabled>Select Day</option>
+              <option *ngFor="let day of daysOfWeek" [value]="day">{{ day }}</option>
+            </select>
+            
+            <div class="time-group">
+              <select formControlName="startHour"><option value="" disabled>HH</option><option *ngFor="let h of hours" [value]="h">{{h}}</option></select>
+              <span>:</span>
+              <select formControlName="startMinute"><option value="" disabled>MM</option><option *ngFor="let m of minutes" [value]="m">{{m}}</option></select>
+              <select formControlName="startPeriod"><option *ngFor="let p of periods" [value]="p">{{p}}</option></select>
+            </div>
+            
+            <span class="separator">to</span>
+
+            <div class="time-group">
+              <select formControlName="endHour"><option value="" disabled>HH</option><option *ngFor="let h of hours" [value]="h">{{h}}</option></select>
+              <span>:</span>
+              <select formControlName="endMinute"><option value="" disabled>MM</option><option *ngFor="let m of minutes" [value]="m">{{m}}</option></select>
+              <select formControlName="endPeriod"><option *ngFor="let p of periods" [value]="p">{{p}}</option></select>
+            </div>
+            
+            <button type="button" (click)="removeScheduleItem(i)" class="remove-btn" title="Remove Time Slot">&#10006;</button>
+
+            <div class="validation-error time-range-error" *ngIf="item.invalid && (item.dirty || item.touched)">
+              <small *ngIf="item.errors?.['timeRangeInvalid']">End time must be after start time.</small>
+            </div>
           </div>
         </div>
       </div>
       
       <div class="form-actions">
-        <button type="submit" class="primary">{{ isEditMode ? 'Update Course' : 'Add Course' }}</button>
-        <button type="button" *ngIf="isEditMode" (click)="resetForm()" class="secondary">Cancel Edit</button>
+        <button type="submit" class="primary" [disabled]="courseForm.invalid">{{ isEditMode ? 'Update Course' : 'Add Course' }}</button>
+        <button type="button" *ngIf="isEditMode" (click)="resetForm()" class="secondary">Cancel</button>
       </div>
     </form>
   </div>
@@ -47,13 +97,13 @@
   <div class="card">
     <h3>My Courses</h3>
     <div *ngIf="courses.length === 0 && !isLoading; else courseList" class="empty-state">
-      You haven't added any courses yet. Use the form above to get started!
+      You haven't added any courses yet.
     </div>
     <ng-template #courseList>
       <div class="course-grid">
         <div class="course-card" *ngFor="let course of courses; let i = index" [ngClass]="'color-' + (i % 6)">
           <div class="course-card-header">
-            <h4>{{ course.courseName }}</h4>
+            <h4>{{ course.courseName }} <small *ngIf="course.courseId">({{ course.courseId }})</small></h4>
             <div class="course-actions">
               <button (click)="onEdit(course)" title="Edit Course">&#9998;</button>
               <button (click)="onDelete(course._id)" title="Delete Course">&#10006;</button>
@@ -61,13 +111,17 @@
           </div>
           <div class="course-card-body">
             <p *ngIf="course.instructor"><strong>Instructor:</strong> {{ course.instructor }}</p>
-            <p *ngIf="course.scheduleDays && course.scheduleDays.length > 0">
-              <strong>Schedule:</strong> 
-              {{ course.scheduleDays.join(', ') }} 
-              <span *ngIf="course.scheduleStartTime && course.scheduleEndTime">
-                from {{ course.scheduleStartTime }} to {{ course.scheduleEndTime }}
-              </span>
+            <p *ngIf="course.startDate && course.endDate">
+              <strong>Duration:</strong> {{ course.startDate | date:'mediumDate' }} - {{ course.endDate | date:'mediumDate' }}
             </p>
+            <div *ngIf="course.schedule && course.schedule.length > 0">
+              <strong>Schedule:</strong>
+              <ul>
+                <li *ngFor="let s of course.schedule">
+                  {{ s.day.substring(0, 3) }}: {{ convert24hrTo12hr(s.startTime).hour }}:{{ convert24hrTo12hr(s.startTime).minute }} {{ convert24hrTo12hr(s.startTime).period }} - {{ convert24hrTo12hr(s.endTime).hour }}:{{ convert24hrTo12hr(s.endTime).minute }} {{ convert24hrTo12hr(s.endTime).period }}
+                </li>
+              </ul>
+            </div>
           </div>
           <div class="course-card-footer">
             <a [routerLink]="['/academic/courses', course._id, 'notes']" class="notes-link">View Notes</a>
