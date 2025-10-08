@@ -24,12 +24,12 @@
     <button class="primary" (click)="applySettings()">Apply & Reset</button>
   </div>
 
-  <!-- Timer Card -->
-  <div class="card timer-card" [ngClass]="timerState">
-    <div class="timer-display">
-      <span>{{ minutes | number:'2.0' }}</span>
-      <span>:</span>
-      <span>{{ seconds | number:'2.0' }}</span>
+  <!-- Main Timer Display (Centered) -->
+  <div class="centered-timer-section"> <!-- New container for centering -->
+    <div class="timer-circle-wrapper">
+      <div class="timer-circle">
+        <span class="timer-time">{{ minutes | number:'2.0' }}:{{ seconds | number:'2.0' }}</span>
+      </div>
     </div>
     <div class="timer-state">
       {{ formattedState }}
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- Instructions Card -->
+  <!-- Instructions Card (Moved below timer) -->
   <div class="card instructions-card">
     <h3>How it works</h3>
     <ol>
