@@ -22,7 +22,7 @@
         </div>
         <div class="form-group">
           <label for="dueDate">Due Date *</label>
-          <input id="dueDate" [(ngModel)]="newAssignment.dueDate" name="dueDate" type="date" required>
+          <input id="dueDate" [(ngModel)]="newAssignment.dueDate" name="dueDate" type="date" [min]="today" required>
         </div>
         <div class="form-group">
           <label for="status">Status</label>

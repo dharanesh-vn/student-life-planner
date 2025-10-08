@@ -1,12 +1,12 @@
 import {
   DomSanitizer
-} from "./chunk-RGRIXVDD.js";
-import {
-  HttpClient
-} from "./chunk-3QGGR4IJ.js";
+} from "./chunk-LM6HIRSU.js";
 import {
   isPlatformBrowser
 } from "./chunk-YTB2QOU7.js";
+import {
+  HttpClient
+} from "./chunk-3QGGR4IJ.js";
 import "./chunk-OUSM42MY.js";
 import {
   ChangeDetectionStrategy,

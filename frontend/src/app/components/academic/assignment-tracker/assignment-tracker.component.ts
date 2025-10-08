@@ -20,10 +20,21 @@ export class AssignmentTrackerComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
+  today: string = ''; // For HTML input [min]
+
   constructor(private academicService: AcademicService) {}
 
   ngOnInit(): void {
     this.loadInitialData();
+    this.today = this.getTodayDate(); // Initialize today for HTML
+  }
+
+  // Helper method to get today's date in YYYY-MM-DD format
+  private getTodayDate(): string {
+    const now = new Date();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
   }
 
   loadInitialData(): void {
@@ -44,20 +55,27 @@ export class AssignmentTrackerComponent implements OnInit {
   onAddAssignment(): void {
     this.errorMessage = '';
     this.successMessage = '';
+
+    // Use helper method for date validation
+    const todayDate = new Date(this.getTodayDate());
+    todayDate.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(this.newAssignment.dueDate);
+
+    if (selectedDate < todayDate) {
+      this.handleError('Due date cannot be in the past.');
+      return;
+    }
+
     if (!this.newAssignment.title.trim() || !this.newAssignment.dueDate || !this.newAssignment.course) {
       this.handleError('Please fill out all required fields: Title, Course, and Due Date.');
       return;
     }
+
     this.isLoading = true;
     this.academicService.addAssignment(this.newAssignment).subscribe({
       next: (createdAssignment) => {
-        // THIS IS THE CORRECTED LOGIC
-        // The backend returns the newly created assignment, complete with its populated course name.
-        // We add this complete object to our local array.
         this.assignments.push(createdAssignment);
-        // Then, we re-sort the local array to maintain order.
         this.assignments.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-        // Reset the form for the next entry.
         this.newAssignment = { title: '', dueDate: '', status: 'To-Do', course: '' };
         this.handleSuccess('Assignment added successfully!');
       },
@@ -101,6 +119,15 @@ export class AssignmentTrackerComponent implements OnInit {
     }
   }
   
-  private handleError(message: string): void { this.errorMessage = message; this.isLoading = false; setTimeout(() => this.errorMessage = '', 4000); }
-  private handleSuccess(message: string): void { this.successMessage = message; this.isLoading = false; setTimeout(() => this.successMessage = '', 3000); }
+  private handleError(message: string): void { 
+    this.errorMessage = message; 
+    this.isLoading = false; 
+    setTimeout(() => this.errorMessage = '', 4000); 
+  }
+
+  private handleSuccess(message: string): void { 
+    this.successMessage = message; 
+    this.isLoading = false; 
+    setTimeout(() => this.successMessage = '', 3000); 
+  }
 }
