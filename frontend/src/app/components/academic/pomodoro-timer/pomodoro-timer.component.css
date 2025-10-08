@@ -1,38 +1,82 @@
-/* ... (keep all your existing styles for .container, .header-with-action, .settings-btn, .settings-card, .settings-grid, input[type="number"], .primary, .secondary, etc.) ... */
+/* ... (keep all your existing styles for .container, .header-with-action, .settings-grid, input[type="number"], .primary, .secondary, etc.) ... */
 
 /* -------------------------------------------------------------------------- */
-/* NEW AND MODIFIED STYLES FOR THE CIRCULAR TIMER */
+/* REMOVED/MODIFIED STYLES */
 /* -------------------------------------------------------------------------- */
 
-/* Remove or comment out any previous .timer-card styles that conflict */
-/* Example:
-.timer-card {
-  display: none; // or remove entirely
+/* Remove these if they exist (settings button is gone) */
+/* .settings-btn { ... } */
+
+/* -------------------------------------------------------------------------- */
+/* NEW AND MODIFIED STYLES FOR INTEGRATED SETTINGS AND CIRCULAR TIMER */
+/* -------------------------------------------------------------------------- */
+
+/* Adjusting the main container for overall layout if needed */
+.container {
+    /* You might want to adjust max-width or add padding here */
+    max-width: 800px; /* Example max-width for content */
+    margin: 0 auto;   /* Center the container itself */
+    padding: 1rem;    /* Some padding around content */
 }
-*/
 
-/* New container for centering the timer elements */
+/* Style for the always-visible customize durations card */
+.customize-durations-card {
+  margin-top: 1.5rem; /* Space below header */
+  margin-bottom: 2.5rem; /* More space between settings and timer */
+  padding: 1.5rem; /* Padding inside the card */
+  background-color: var(--card-bg, #fff); /* Assuming you have a card background color */
+  border-radius: 8px;
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+  max-width: 600px; /* Constrain its width */
+  margin-left: auto; /* Center the card horizontally */
+  margin-right: auto;
+  text-align: center; /* Center the h3 inside */
+}
+
+.customize-durations-card h3 {
+  margin-bottom: 1.5rem; /* Space below title */
+  color: var(--heading-color, #333);
+}
+
+.customize-durations-card .settings-grid {
+    /* Adjust grid for settings inputs within this card */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid */
+    margin-bottom: 2rem; /* Space between inputs and apply button */
+    justify-content: center; /* Center grid items if there's extra space */
+    max-width: 500px; /* Keep grid a reasonable width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.customize-durations-card .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center label and input */
+    gap: 0.5rem;
+}
+
+.customize-durations-card label {
+    font-weight: 500;
+    color: var(--text-color, #333);
+}
+
+/* Ensure buttons in the settings card look good */
+.customize-durations-card .primary {
+    padding: 0.8rem 2rem;
+    font-size: 1.05em;
+}
+
+/* Main Timer Display (Centered) - Keep largely the same */
 .centered-timer-section {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center horizontally */
-  justify-content: center; /* Center vertically if space allows */
-  gap: 1.5rem; /* Space between circle, state, and controls */
-  margin-top: 2rem; /* Space below the header/settings */
-  margin-bottom: 2rem; /* Space above instructions */
-  padding: 1rem 0; /* Some vertical padding if needed, no horizontal as it's centered */
-  /* If you want the timer elements to live within a new "card" like background,
-     you would add card-like styles here:
-     background-color: var(--card-bg, #fff);
-     border-radius: 8px;
-     box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
-     max-width: 400px; // constrain width
-     margin-left: auto;
-     margin-right: auto;
-  */
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem; /* Adjusted margin since instructions are gone */
+  padding: 1rem 0;
 }
 
-/* Wrapper to help center the circle within its parent */
 .timer-circle-wrapper {
   display: flex;
   justify-content: center;
@@ -41,19 +85,21 @@
 }
 
 .timer-circle {
-  width: 280px; /* Slightly larger base size for prominence */
+  width: 280px;
   height: 280px;
-  border: 8px solid var(--accent-color, #661c93);
+  
+  border: 8px solid #6a1b9a; 
+  
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 }
 
 .timer-time {
-  font-size: 5em; /* Larger font size */
+  font-size: 5em;
   font-weight: bold;
   color: var(--text-color, #333);
   font-family: 'Arial', sans-serif;
@@ -61,7 +107,7 @@
 }
 
 .timer-state {
-  font-size: 1.5em; /* Larger status text */
+  font-size: 1.5em;
   color: var(--text-color-light, #555);
   margin-top: 0.8rem;
   text-align: center;
@@ -70,84 +116,67 @@
 .timer-controls {
   display: flex;
   justify-content: center;
-  gap: 1.2rem; /* More space between buttons */
-  margin-top: 1.5rem; /* More space between status and buttons */
+  gap: 1.2rem;
+  margin-top: 1.5rem;
 }
 
-/* Instructions card styling (keep existing or add if missing) */
-.instructions-card {
-  max-width: 600px; /* Constrain width for readability */
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1.5rem;
-  background-color: var(--card-bg, #fff);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.instructions-card h3 {
-  color: var(--heading-color, #333);
-  margin-bottom: 1rem;
-}
-
-.instructions-card ol {
-  padding-left: 25px;
-  margin: 0;
-  color: var(--text-color, #555);
-}
-
-.instructions-card li {
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-}
+/* No .instructions-card styles needed anymore as it's removed */
 
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .timer-circle {
-    width: 220px;
-    height: 220px;
-    border-width: 6px; /* Slightly thinner border on smaller screens */
-  }
-  .timer-time {
-    font-size: 4em;
-  }
-  .timer-state {
-    font-size: 1.3em;
-  }
-  .timer-controls button {
-    padding: 0.7rem 1.5rem;
-    font-size: 0.9em;
-  }
-  .centered-timer-section {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .instructions-card {
-    padding: 1rem;
-    margin-top: 1.5rem;
-  }
+    .customize-durations-card {
+        padding: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
+    .customize-durations-card .settings-grid {
+        grid-template-columns: 1fr; /* Stack inputs vertically on smaller screens */
+        max-width: 250px; /* Constrain width when stacked */
+    }
+    .timer-circle {
+        width: 220px;
+        height: 220px;
+        border-width: 6px;
+    }
+    .timer-time {
+        font-size: 4em;
+    }
+    .timer-state {
+        font-size: 1.3em;
+    }
+    .timer-controls button {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9em;
+    }
+    .centered-timer-section {
+        margin-bottom: 2rem;
+    }
 }
 
 @media (max-width: 500px) {
-  .timer-circle {
-    width: 180px;
-    height: 180px;
-    border-width: 5px;
-  }
-  .timer-time {
-    font-size: 3.2em;
-  }
-  .timer-state {
-    font-size: 1.1em;
-  }
-  .timer-controls {
-    flex-direction: column; /* Stack buttons vertically on very small screens */
-    gap: 0.8rem;
-  }
-  .timer-controls button {
-    width: 80%; /* Make buttons full width in stack */
-    max-width: 200px;
-    margin: 0 auto; /* Center stacked buttons */
-  }
+    .timer-circle {
+        width: 180px;
+        height: 180px;
+        border-width: 5px;
+    }
+    .timer-time {
+        font-size: 3.2em;
+    }
+    .timer-state {
+        font-size: 1.1em;
+    }
+    .timer-controls {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    .timer-controls button {
+        width: 80%;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+    .customize-durations-card .primary {
+        width: 80%; /* Make settings button wider on small screens */
+        max-width: 200px;
+    }
 }
