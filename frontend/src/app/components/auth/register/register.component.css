@@ -1,43 +1,28 @@
-/* Reusing styles from login for a consistent auth experience */
-.auth-inner-container {
-  width: 100%;
-  max-width: 400px;
-  margin: auto;
+.auth-inner-container { width: 100%; max-width: 450px; margin: auto; padding: 2rem; }
+.auth-header { text-align: center; margin-bottom: 2rem; }
+.welcome-icon { width: 48px; height: 48px; color: var(--primary-color); margin-bottom: 1rem; display: inline-block; animation: bounce 2s infinite; }
+.auth-header h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.auth-header p { color: var(--text-color-secondary); font-size: 1.125rem; }
+.register-form { display: flex; flex-direction: column; gap: 1.5rem; }
+.input-container { position: relative; }
+.form-group input { width: 100%; padding-right: 3rem; }
+.auth-button { width: 100%; margin-top: 1rem; }
+.auth-button:disabled { background: #ccc; cursor: not-allowed; }
+.auth-footer { text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+.auth-footer p { color: var(--text-color-light); font-size: 0.875rem; }
+.auth-link { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+.auth-link:hover { text-decoration: underline; }
+.password-toggle {
+  position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--text-color-light);
+  padding: 0.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;
 }
-
-.auth-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.password-toggle:hover { background-color: #f0f0f0; }
+.password-requirements {
+  margin-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+  font-size: 0.875rem;
 }
-
-.auth-header h2 {
-  font-size: 2rem;
-}
-
-.auth-header p {
-  color: var(--text-color-light);
-}
-
-.auth-button {
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.auth-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-.auth-footer p {
-  color: var(--text-color-light);
-}
-
-.auth-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
-}
+.requirement { display: flex; align-items: center; gap: 0.5rem; color: var(--text-color-light); transition: color 0.3s; }
+.requirement.valid { color: var(--success-color); font-weight: 500; }
+.requirement-icon { font-weight: bold; }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }

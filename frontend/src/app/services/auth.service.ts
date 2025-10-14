@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,7 +15,8 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   private isTokenPresent(): boolean {
-    return !!localStorage.getItem('token');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    return !!token;
   }
 
   register(credentials: { name: string, email: string, password: string }): Observable<any> {
@@ -28,7 +29,6 @@ export class AuthService {
         if (response && response.token) {
           localStorage.setItem('token', response.token);
           this.loggedIn.next(true);
-          // On successful login, redirect to the main dashboard
           this.router.navigate(['/academic/assignments']);
         }
       })
@@ -38,9 +38,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     this.loggedIn.next(false);
-    this.router.navigate(['/']); // On logout, go to the Home/Login page
+    this.router.navigate(['/']);
   }
 
+  // This is the crucial method the guard calls. It's a simple, synchronous check.
   isLoggedIn(): boolean {
     return this.isTokenPresent();
   }

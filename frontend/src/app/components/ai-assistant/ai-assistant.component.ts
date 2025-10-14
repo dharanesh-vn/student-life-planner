@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MarkdownModule } from 'ngx-markdown';
 import { AcademicService, Course, Note } from '../../services/academic.service';
 import { AiService, AiAction } from '../../services/ai.service';
-import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-ai-assistant',

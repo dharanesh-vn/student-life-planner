@@ -9,11 +9,11 @@
   <div class="overview-grid">
     <div class="card overview-card">
       <h3>Total Balance</h3>
-      <p class="amount" [ngClass]="{'negative': totalBalance < 0}">{{ totalBalance | currency }}</p>
+      <p class="amount" [ngClass]="{'negative': totalBalance < 0}">{{ formatCurrency(totalBalance) }}</p>
     </div>
     <div class="card overview-card">
       <h3>Monthly Subscriptions</h3>
-      <p class="amount expense">{{ totalMonthlySubscriptions | currency }} / month</p>
+      <p class="amount expense">{{ formatCurrency(totalMonthlySubscriptions) }} / month</p>
     </div>
   </div>
 
@@ -28,7 +28,7 @@
         <ul class="account-list" *ngIf="accounts.length > 0">
           <li *ngFor="let account of accounts">
             <span class="account-name">{{ account.accountName }}</span>
-            <span class="account-balance" [ngClass]="{'negative': account.balance < 0}">{{ account.balance | currency }}</span>
+            <span class="account-balance" [ngClass]="{'negative': account.balance < 0}">{{ formatCurrency(account.balance) }}</span>
             <button class="delete-btn small" (click)="onDeleteAccount(account._id)" title="Delete Account">×</button>
           </li>
         </ul>
@@ -46,7 +46,7 @@
         <ul class="sub-list" *ngIf="subscriptions.length > 0">
           <li *ngFor="let sub of subscriptions">
             <span>{{ sub.name }}</span>
-            <span class="sub-cost">{{ sub.monthlyCost | currency }}</span>
+            <span class="sub-cost">{{ formatCurrency(sub.monthlyCost) }}</span>
             <button class="delete-btn small" (click)="onDeleteSubscription(sub._id)" title="Delete Subscription">×</button>
           </li>
         </ul>
@@ -102,7 +102,7 @@
               <span *ngIf="trans.account && typeof trans.account === 'object'">{{ trans.account.accountName }} - {{ trans.date | date:'mediumDate' }}</span>
             </div>
             <div class="trans-amount" [class.income]="trans.type === 'Income'" [class.expense]="trans.type === 'Expense'">
-              {{ (trans.type === 'Income' ? '+' : '−') + (trans.amount | currency) }}
+              {{ (trans.type === 'Income' ? '+' : '−') + formatCurrency(trans.amount) }}
               <button class="delete-btn small" (click)="onDeleteTransaction(trans._id)" title="Delete Transaction">×</button>
             </div>
           </li>

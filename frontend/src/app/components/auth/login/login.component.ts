@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent {
   credentials = { email: '', password: '' };
   errorMessage: string = '';
+  showPassword = false;
 
   constructor(private authService: AuthService) { }
 
@@ -25,10 +26,13 @@ export class LoginComponent {
       return;
     }
     this.authService.login(this.credentials).subscribe({
-      // On success, the service handles the redirect, so we don't need a 'next' block.
       error: (err: HttpErrorResponse) => {
         this.errorMessage = err.error?.message || 'Invalid credentials. Please try again.';
       }
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }

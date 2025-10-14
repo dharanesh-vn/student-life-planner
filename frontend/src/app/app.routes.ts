@@ -1,5 +1,5 @@
-import { Routes, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { Routes, Router, UrlTree } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 // Import Layouts
@@ -18,11 +18,15 @@ import { GoalsComponent } from './components/planning/goals/goals.component';
 import { FinanceDashboardComponent } from './components/finance/finance-dashboard/finance-dashboard.component';
 import { AiAssistantComponent } from './components/ai-assistant/ai-assistant.component';
 
-const authGuard = () => {
+const authGuard = (): boolean | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  if (authService.isLoggedIn()) { return true; }
-  else { router.navigate(['/']); return false; }
+
+  if (authService.isLoggedIn()) {
+    return true;
+  }
+
+  return router.parseUrl('/');
 };
 
 export const routes: Routes = [
@@ -39,7 +43,7 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'ai-assistant', component: AiAssistantComponent }, // AI Assistant Route
+      { path: 'ai-assistant', component: AiAssistantComponent },
       { path: 'academic/assignments', component: AssignmentTrackerComponent },
       { path: 'academic/classes', component: ClassManagementComponent },
       { path: 'academic/pomodoro', component: PomodoroTimerComponent },

@@ -1,29 +1,95 @@
+/* Finance Dashboard Component Styles */
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+h2 {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Overview Cards */
 .overview-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
 }
+
+.overview-card {
+  background: var(--card-background-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.overview-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.overview-card h3 {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
 .overview-card .amount {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--text-color);
-  margin: 0.5rem 0 0;
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
 }
+
 .overview-card .amount.negative {
   color: var(--error-color);
 }
+
 .overview-card .amount.expense {
-  color: var(--error-color);
+  color: var(--warning-color);
 }
 
+/* Main Finance Grid */
 .finance-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
   align-items: start;
 }
-@media (max-width: 992px) {
+
+@media (max-width: 1024px) {
   .finance-grid {
     grid-template-columns: 1fr;
   }
@@ -32,75 +98,243 @@
 .left-column, .right-column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
 }
 
+/* Inline Forms */
 .inline-form {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
   border-top: 1px solid var(--border-color);
-}
-.inline-form button {
-  padding: 0.5rem 1rem;
-  align-self: end;
-  height: 45px; /* Match input height */
+  align-items: end;
 }
 
+.inline-form input {
+  padding: var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  transition: var(--transition-normal);
+  background-color: var(--card-background-color);
+  color: var(--text-color);
+}
+
+.inline-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.inline-form input::placeholder {
+  color: var(--text-color-muted);
+}
+
+.inline-form button {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: var(--transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 45px;
+  min-width: 45px;
+}
+
+.inline-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Lists */
 .account-list, .sub-list, .transaction-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  background: var(--card-background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
 }
+
 .account-list li, .sub-list li, .transaction-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color-light);
+  transition: var(--transition-fast);
 }
+
 .account-list li:last-child, .sub-list li:last-child, .transaction-list li:last-child {
   border-bottom: none;
 }
-.account-balance, .sub-cost {
-  font-weight: 500;
+
+.account-list li:hover, .sub-list li:hover, .transaction-list li:hover {
+  background-color: var(--background-secondary);
 }
+
+.account-name {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.account-balance, .sub-cost {
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-color);
+}
+
 .account-balance.negative {
   color: var(--error-color);
 }
 
-.form-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  align-items: end;
+.sub-cost {
+  color: var(--warning-color);
 }
-.trans-details strong { display: block; }
-.trans-details span { font-size: 0.9rem; color: var(--text-color-light); }
-.trans-amount { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; text-align: right; }
-.trans-amount.income { color: var(--success-color); }
-.trans-amount.expense { color: var(--error-color); }
 
-.delete-btn.small {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  color: #adb5bd;
-  cursor: pointer;
-  padding: 0.25rem;
-  line-height: 1;
+/* Transaction Details */
+.trans-details {
+  flex: 1;
 }
-.delete-btn.small:hover {
+
+.trans-details strong {
+  display: block;
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.trans-details span {
+  font-size: 0.875rem;
+  color: var(--text-color-light);
+}
+
+.trans-amount {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.trans-amount.income {
+  color: var(--success-color);
+}
+
+.trans-amount.expense {
   color: var(--error-color);
 }
 
+/* Delete Buttons */
+.delete-btn.small {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  line-height: 1;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-fast);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn.small:hover {
+  color: var(--error-color);
+  background-color: var(--error-light);
+}
+
+/* Form Grid */
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-md);
+  align-items: end;
+}
+
+/* Empty States */
 .empty-state {
   text-align: center;
   color: var(--text-color-light);
-  padding: 2rem;
+  padding: var(--spacing-2xl);
+  background: var(--background-secondary);
+  border-radius: var(--border-radius);
+  border: 2px dashed var(--border-color);
+  font-style: italic;
 }
+
 .empty-state.small {
-  padding: 1rem;
+  padding: var(--spacing-lg);
+  font-size: 0.875rem;
+}
+
+/* Card Headers */
+.card h3 {
+  color: var(--text-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--border-color-light);
+  position: relative;
+}
+
+.card h3::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--primary-gradient);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-lg);
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .overview-card .amount {
+    font-size: 2rem;
+  }
+  
+  .inline-form {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .account-list li, .sub-list li, .transaction-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .trans-amount {
+    align-self: flex-end;
+  }
 }

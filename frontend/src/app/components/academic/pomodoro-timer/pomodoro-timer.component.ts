@@ -69,7 +69,7 @@ export class PomodoroTimerComponent implements OnDestroy, OnInit {
       this.timerOn = savedState.timerOn;
 
       const elapsedSeconds = this.timerOn ? Math.floor((Date.now() - savedState.timestamp) / 1000) : 0;
-      const remainingTotalSeconds = (savedState.minutes * 60 + savedState.seconds) - elapsedSeconds;
+      const remainingTotalSeconds = Math.max(0, (savedState.minutes * 60 + savedState.seconds) - elapsedSeconds);
 
       if (remainingTotalSeconds <= 0) {
         this.switchState(undefined, false, false);
@@ -109,9 +109,11 @@ export class PomodoroTimerComponent implements OnDestroy, OnInit {
         this.minutes--;
         this.seconds = 59;
       } else {
+        // Timer finished - play alarm and switch state
         if (this.alarmSound) this.alarmSound.play();
         this.switchState();
       }
+      this.saveState();
     }, 1000);
   }
 
@@ -148,8 +150,26 @@ export class PomodoroTimerComponent implements OnDestroy, OnInit {
   }
 
   applySettings(): void {
+    // Validate and ensure positive values
+    this.workDuration = Math.max(1, this.workDuration);
+    this.shortBreakDuration = Math.max(1, this.shortBreakDuration);
+    this.longBreakDuration = Math.max(1, this.longBreakDuration);
+    
     this.showSettings = false;
     this.resetTimer();
+  }
+
+  // Validation methods for timer inputs
+  validateWorkDuration(value: number): void {
+    this.workDuration = Math.max(1, Math.min(60, value));
+  }
+
+  validateShortBreakDuration(value: number): void {
+    this.shortBreakDuration = Math.max(1, Math.min(30, value));
+  }
+
+  validateLongBreakDuration(value: number): void {
+    this.longBreakDuration = Math.max(1, Math.min(60, value));
   }
 
   // THIS IS THE CORRECTED GETTER FUNCTION

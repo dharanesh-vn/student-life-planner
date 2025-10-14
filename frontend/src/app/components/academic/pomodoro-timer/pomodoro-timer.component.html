@@ -9,16 +9,16 @@
     <h3>Customize Durations (minutes)</h3>
     <div class="settings-grid">
       <div class="form-group">
-        <label for="work">Work Session</label>
-        <input id="work" type="number" min="1" [(ngModel)]="workDuration">
+        <label for="work">Work Session (1-60 minutes)</label>
+        <input id="work" type="number" min="1" max="60" [(ngModel)]="workDuration" (blur)="validateWorkDuration(workDuration)">
       </div>
       <div class="form-group">
-        <label for="short">Short Break(Tiny pause to refresh your brain.)</label>
-        <input id="short" type="number" min="1" [(ngModel)]="shortBreakDuration">
+        <label for="short">Short Break (1-30 minutes)</label>
+        <input id="short" type="number" min="1" max="30" [(ngModel)]="shortBreakDuration" (blur)="validateShortBreakDuration(shortBreakDuration)">
       </div>
       <div class="form-group">
-        <label for="long">Long Break(Bigger pause after several sessions to recharge fully.)</label>
-        <input id="long" type="number" min="1" [(ngModel)]="longBreakDuration">
+        <label for="long">Long Break (1-60 minutes)</label>
+        <input id="long" type="number" min="1" max="60" [(ngModel)]="longBreakDuration" (blur)="validateLongBreakDuration(longBreakDuration)">
       </div>
     </div>
     <button class="primary" (click)="applySettings()">Apply & Reset</button>
