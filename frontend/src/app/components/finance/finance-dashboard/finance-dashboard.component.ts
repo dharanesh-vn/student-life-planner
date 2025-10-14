@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FinanceService, FinanceAccount, Transaction, Subscription } from '../../../services/finance.service';
 import { format } from 'date-fns';
 
 @Component({
   selector: 'app-finance-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, CurrencyPipe],
   templateUrl: './finance-dashboard.component.html',
   styleUrls: ['./finance-dashboard.component.css']
 })
@@ -16,50 +16,49 @@ export class FinanceDashboardComponent implements OnInit {
   transactions: Transaction[] = [];
   subscriptions: Subscription[] = [];
 
-  newAccount = { accountName: '', balance: 0 };
-  newTransaction = { description: '', amount: 0, type: 'Expense' as 'Income' | 'Expense', date: format(new Date(), 'yyyy-MM-dd'), account: '' };
-  newSubscription = { name: '', monthlyCost: 0, billingDate: 1 };
+  accountForm: FormGroup;
+  transactionForm: FormGroup;
+  subscriptionForm: FormGroup;
   
   isLoading = false;
   errorMessage = '';
   successMessage = '';
 
-  constructor(private financeService: FinanceService) {}
+  constructor(
+    private financeService: FinanceService,
+    private fb: FormBuilder
+  ) {
+    this.accountForm = this.fb.group({
+      accountName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]*$/)]],
+      balance: [null, [Validators.required, Validators.pattern(/^-?\d*\.?\d+$/)]]
+    });
 
-  // Format currency for Indian Rupees
-  formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(amount);
+    this.transactionForm = this.fb.group({
+      description: ['', Validators.required],
+      amount: [null, [Validators.required, Validators.min(0.01)]],
+      type: ['Expense', Validators.required],
+      account: ['', Validators.required]
+    });
+
+    this.subscriptionForm = this.fb.group({
+      name: ['', Validators.required],
+      monthlyCost: [null, [Validators.required, Validators.min(0.01)]]
+    });
   }
 
   ngOnInit(): void {
     this.loadAllFinanceData();
   }
 
+  get af() { return this.accountForm.controls; }
+  get tf() { return this.transactionForm.controls; }
+  get sf() { return this.subscriptionForm.controls; }
+
   loadAllFinanceData(): void {
     this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-    
-    this.financeService.getAccounts().subscribe({
-      next: data => this.accounts = data,
-      error: err => this.handleError('Failed to load accounts.')
-    });
-    this.financeService.getTransactions().subscribe({
-      next: data => this.transactions = data,
-      error: err => this.handleError('Failed to load transactions.')
-    });
-    this.financeService.getSubscriptions().subscribe({
-      next: data => {
-        this.subscriptions = data;
-        this.isLoading = false;
-      },
-      error: err => this.handleError('Failed to load subscriptions.')
-    });
+    this.financeService.getAccounts().subscribe({ next: data => this.accounts = data, error: err => this.handleError('Failed to load accounts.')});
+    this.financeService.getTransactions().subscribe({ next: data => this.transactions = data, error: err => this.handleError('Failed to load transactions.')});
+    this.financeService.getSubscriptions().subscribe({ next: data => { this.subscriptions = data; this.isLoading = false; }, error: err => this.handleError('Failed to load subscriptions.')});
   }
 
   get totalBalance(): number {
@@ -70,15 +69,15 @@ export class FinanceDashboardComponent implements OnInit {
   }
 
   onAddAccount(): void {
-    if (!this.newAccount.accountName.trim()) {
-      this.handleError('Account name is required.');
+    if (this.accountForm.invalid) {
+      this.accountForm.markAllAsTouched();
       return;
     }
     this.isLoading = true;
-    this.financeService.addAccount(this.newAccount).subscribe({
+    this.financeService.addAccount(this.accountForm.value).subscribe({
       next: (acc) => {
         this.accounts.push(acc);
-        this.newAccount = { accountName: '', balance: 0 };
+        this.accountForm.reset({ balance: null });
         this.handleSuccess('Account added!');
       },
       error: (err) => this.handleError('Failed to add account.')
@@ -86,15 +85,15 @@ export class FinanceDashboardComponent implements OnInit {
   }
 
   onAddTransaction(): void {
-    if (!this.newTransaction.description.trim() || !this.newTransaction.amount || this.newTransaction.amount <= 0 || !this.newTransaction.account) {
-      this.handleError('Please fill all transaction fields with valid values.');
+    if (this.transactionForm.invalid) {
+      this.transactionForm.markAllAsTouched();
       return;
     }
     this.isLoading = true;
-    this.financeService.addTransaction(this.newTransaction).subscribe({
+    this.financeService.addTransaction({ ...this.transactionForm.value, date: new Date().toISOString() }).subscribe({
       next: () => {
         this.loadAllFinanceData();
-        this.newTransaction = { description: '', amount: 0, type: 'Expense', date: format(new Date(), 'yyyy-MM-dd'), account: '' };
+        this.transactionForm.reset({ type: 'Expense', account: '' });
         this.handleSuccess('Transaction added!');
       },
       error: (err) => this.handleError('Failed to add transaction.')
@@ -102,16 +101,16 @@ export class FinanceDashboardComponent implements OnInit {
   }
 
   onAddSubscription(): void {
-    if (!this.newSubscription.name.trim() || !this.newSubscription.monthlyCost || this.newSubscription.monthlyCost <= 0) {
-      this.handleError('Subscription name and a valid cost are required.');
+    if (this.subscriptionForm.invalid) {
+      this.subscriptionForm.markAllAsTouched();
       return;
     }
     this.isLoading = true;
-    this.financeService.addSubscription(this.newSubscription).subscribe({
+    this.financeService.addSubscription({ ...this.subscriptionForm.value, billingDate: 1 }).subscribe({
       next: (sub) => {
         this.subscriptions.push(sub);
         this.subscriptions.sort((a,b) => a.billingDate - b.billingDate);
-        this.newSubscription = { name: '', monthlyCost: 0, billingDate: 1 };
+        this.subscriptionForm.reset();
         this.handleSuccess('Subscription added!');
       },
       error: (err) => this.handleError('Failed to add subscription.')
@@ -120,13 +119,10 @@ export class FinanceDashboardComponent implements OnInit {
   
   onDeleteAccount(id: string | undefined): void {
     if (!id) return;
-    if (confirm('Are you sure? Deleting an account will also delete all its transactions.')) {
+    if (confirm('Are you sure? This will also delete all associated transactions.')) {
       this.isLoading = true;
       this.financeService.deleteAccount(id).subscribe({
-        next: () => {
-          this.loadAllFinanceData();
-          this.handleSuccess('Account deleted!');
-        },
+        next: () => { this.loadAllFinanceData(); this.handleSuccess('Account deleted!'); },
         error: (err) => this.handleError('Failed to delete account.')
       });
     }
@@ -136,10 +132,7 @@ export class FinanceDashboardComponent implements OnInit {
     if (!id) return;
     this.isLoading = true;
     this.financeService.deleteTransaction(id).subscribe({
-      next: () => {
-        this.loadAllFinanceData();
-        this.handleSuccess('Transaction deleted!');
-      },
+      next: () => { this.loadAllFinanceData(); this.handleSuccess('Transaction deleted!'); },
       error: (err) => this.handleError('Failed to delete transaction.')
     });
   }

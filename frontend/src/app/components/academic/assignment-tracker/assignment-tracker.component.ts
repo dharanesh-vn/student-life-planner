@@ -1,40 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { AcademicService, Course, Assignment } from '../../../services/academic.service';
+import { format } from 'date-fns';
 
-type NewAssignmentForm = Omit<Assignment, '_id' | 'course'> & { course: string };
+// Custom Validator Function
+export function futureDateValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  if (control.value) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today's date to midnight
+    const selectedDate = new Date(control.value);
+    if (selectedDate < today) {
+      return { 'pastDate': true }; // Return error if the date is in the past
+    }
+  }
+  return null; // Return null if validation passes
+}
 
 @Component({
   selector: 'app-assignment-tracker',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './assignment-tracker.component.html',
   styleUrls: ['./assignment-tracker.component.css']
 })
 export class AssignmentTrackerComponent implements OnInit {
   assignments: Assignment[] = [];
   courses: Course[] = [];
-  newAssignment: NewAssignmentForm = { title: '', dueDate: '', status: 'To-Do', course: '' };
+  assignmentForm: FormGroup;
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  today: string;
 
-  today: string = ''; // For HTML input [min]
-
-  constructor(private academicService: AcademicService) {}
+  constructor(
+    private academicService: AcademicService,
+    private fb: FormBuilder
+  ) {
+    this.today = format(new Date(), 'yyyy-MM-dd');
+    this.assignmentForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      course: ['', Validators.required],
+      dueDate: [this.today, [Validators.required, futureDateValidator]],
+      status: ['To-Do', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.loadInitialData();
-    this.today = this.getTodayDate(); // Initialize today for HTML
-  }
-
-  // Helper method to get today's date in YYYY-MM-DD format
-  private getTodayDate(): string {
-    const now = new Date();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    return `${now.getFullYear()}-${month}-${day}`;
   }
 
   loadInitialData(): void {
@@ -51,37 +64,30 @@ export class AssignmentTrackerComponent implements OnInit {
       error: err => this.handleError('Could not load assignments.')
     });
   }
+  
+  get f() { return this.assignmentForm.controls; }
 
   onAddAssignment(): void {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Use helper method for date validation
-    const todayDate = new Date(this.getTodayDate());
-    todayDate.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(this.newAssignment.dueDate);
-
-    if (selectedDate < todayDate) {
-      this.handleError('Due date cannot be in the past.');
-      return;
-    }
-
-    if (!this.newAssignment.title.trim() || !this.newAssignment.dueDate || !this.newAssignment.course) {
-      this.handleError('Please fill out all required fields: Title, Course, and Due Date.');
+    if (this.assignmentForm.invalid) {
+      this.handleError('Please fill out all required fields correctly.');
+      this.assignmentForm.markAllAsTouched();
       return;
     }
 
     this.isLoading = true;
-    this.academicService.addAssignment(this.newAssignment).subscribe({
+    this.academicService.addAssignment(this.assignmentForm.value).subscribe({
       next: (createdAssignment) => {
         this.assignments.push(createdAssignment);
         this.assignments.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-        this.newAssignment = { title: '', dueDate: '', status: 'To-Do', course: '' };
+        this.assignmentForm.reset({ status: 'To-Do', dueDate: this.today });
         this.handleSuccess('Assignment added successfully!');
       },
-      error: err => {
+      error: (err) => {
         console.error("Error adding assignment:", err);
-        this.handleError('Failed to add assignment. Please check the console for details.');
+        this.handleError('Failed to add assignment. Please try again.');
       }
     });
   }
@@ -119,15 +125,15 @@ export class AssignmentTrackerComponent implements OnInit {
     }
   }
   
-  private handleError(message: string): void { 
-    this.errorMessage = message; 
-    this.isLoading = false; 
-    setTimeout(() => this.errorMessage = '', 4000); 
+  private handleError(message: string): void {
+    this.errorMessage = message;
+    this.isLoading = false;
+    setTimeout(() => this.errorMessage = '', 4000);
   }
 
-  private handleSuccess(message: string): void { 
-    this.successMessage = message; 
-    this.isLoading = false; 
-    setTimeout(() => this.successMessage = '', 3000); 
+  private handleSuccess(message: string): void {
+    this.successMessage = message;
+    this.isLoading = false;
+    setTimeout(() => this.successMessage = '', 3000);
   }
 }
