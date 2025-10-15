@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlanningService, Task } from '../../../services/planning.service';
-// This import will now work correctly
 import { format, parseISO } from 'date-fns';
 
 @Component({
@@ -18,6 +17,8 @@ export class PlannerComponent implements OnInit {
   
   selectedDate: string = format(new Date(), 'yyyy-MM-dd');
   newTaskTitle: string = '';
+
+  todayDate: string = format(new Date(), 'yyyy-MM-dd'); // 👈 added for date validation
 
   isLoading = false;
   errorMessage = '';
@@ -37,7 +38,7 @@ export class PlannerComponent implements OnInit {
         this.filterTasksForSelectedDate();
         this.isLoading = false;
       },
-      error: (err) => this.handleError('Failed to load tasks.')
+      error: () => this.handleError('Failed to load tasks.')
     });
   }
 
@@ -54,6 +55,16 @@ export class PlannerComponent implements OnInit {
   }
 
   onDateChange(): void {
+    // 👇 validation to block past dates
+    const selected = new Date(this.selectedDate);
+    const today = new Date(this.todayDate);
+
+    if (selected < today) {
+      this.handleError('You cannot select a past date.');
+      this.selectedDate = this.todayDate;
+      return;
+    }
+
     this.filterTasksForSelectedDate();
   }
 
@@ -62,6 +73,16 @@ export class PlannerComponent implements OnInit {
       this.handleError('Task title and date are required.');
       return;
     }
+
+    const selected = new Date(this.selectedDate);
+    const today = new Date(this.todayDate);
+
+    // 👇 prevent adding tasks for past dates
+    if (selected < today) {
+      this.handleError('Cannot add tasks for past dates.');
+      return;
+    }
+
     this.isLoading = true;
     const newTask: Partial<Task> = {
       title: this.newTaskTitle,
@@ -75,7 +96,7 @@ export class PlannerComponent implements OnInit {
         this.newTaskTitle = '';
         this.handleSuccess('Task added!');
       },
-      error: (err) => this.handleError('Failed to add task.')
+      error: () => this.handleError('Failed to add task.')
     });
   }
 
@@ -88,7 +109,7 @@ export class PlannerComponent implements OnInit {
         task.isCompleted = updatedTask.isCompleted;
         this.handleSuccess('Task updated!');
       },
-      error: (err) => this.handleError('Failed to update task.')
+      error: () => this.handleError('Failed to update task.')
     });
   }
 
@@ -101,10 +122,19 @@ export class PlannerComponent implements OnInit {
         this.filterTasksForSelectedDate();
         this.handleSuccess('Task deleted!');
       },
-      error: (err) => this.handleError('Failed to delete task.')
+      error: () => this.handleError('Failed to delete task.')
     });
   }
-  
-  private handleError(message: string): void { this.errorMessage = message; this.isLoading = false; setTimeout(() => this.errorMessage = '', 3000); }
-  private handleSuccess(message: string): void { this.successMessage = message; this.isLoading = false; setTimeout(() => this.successMessage = '', 2000); }
+
+  private handleError(message: string): void { 
+    this.errorMessage = message; 
+    this.isLoading = false; 
+    setTimeout(() => this.errorMessage = '', 3000); 
+  }
+
+  private handleSuccess(message: string): void { 
+    this.successMessage = message; 
+    this.isLoading = false; 
+    setTimeout(() => this.successMessage = '', 2000); 
+  }
 }

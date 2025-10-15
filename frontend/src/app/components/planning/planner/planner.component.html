@@ -5,12 +5,21 @@
 
   <div class="planner-header">
     <h2>Daily Planner</h2>
-    <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange()">
+    <!-- 👇 added min attribute to restrict past dates -->
+    <input 
+      type="date" 
+      [(ngModel)]="selectedDate" 
+      (ngModelChange)="onDateChange()"
+      [min]="todayDate">
   </div>
 
   <div class="card">
     <form (ngSubmit)="onAddTask()" class="add-task-form">
-      <input type="text" [(ngModel)]="newTaskTitle" name="newTaskTitle" placeholder="Add a new task for this day...">
+      <input 
+        type="text" 
+        [(ngModel)]="newTaskTitle" 
+        name="newTaskTitle" 
+        placeholder="Add a new task for this day...">
       <button type="submit" class="primary">+</button>
     </form>
   </div>
