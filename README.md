@@ -1,83 +1,106 @@
-Orbit - The All-In-One AI-Powered Student Planner
-Orbit is a full-stack web application designed from the ground up to be the definitive organizational tool for students. It addresses the common problem of a scattered digital life by integrating academic management, personal planning, financial tracking, and an intelligent AI study assistant into a single, cohesive, and beautifully designed dashboard.
-This project was built from scratch as a comprehensive demonstration of modern web development principles, featuring a decoupled architecture with a robust backend API and a dynamic, responsive frontend.
-Live Application: https://orbit-frontend-repo.vercel.app/
+# Orbit - The All-In-One AI-Powered Student Planner
 
-Project Overview
-The core mission of Orbit is to provide students with a single source of truth for their entire life. In a world where course schedules are in one app, to-do lists in another, budgets in a spreadsheet, and study notes are scattered, Orbit offers a unified solution. It is designed not just to store information, but to provide tools that actively help students become more organized, focused, and productive.
-The application is built with a clean, modular, and scalable architecture, making it both powerful for the end-user and maintainable for the developer.
-Key Features
-Orbit is divided into four main sections, each targeting a critical area of a student's life.
-1. Secure Authentication & Home Page
-Custom Branded Home Page: A professional landing page that serves as the authentication hub, featuring distinct forms for login and registration.
-Robust User Registration: A secure sign-up process with real-time, in-form validation for all fields, including a password strength checker that guides users to create strong, secure passwords.
-JWT-Based Authentication: The entire application is secured with JSON Web Tokens. A secure token is generated upon login and used to authorize all subsequent API requests, ensuring users can only access their own private data.
-2. Academic Dashboard
-This is the core of the application, designed for complete academic management.
-Course Management: Full CRUD (Create, Read, Update, Delete) functionality for courses, featuring a user-friendly form with a structured input for class schedules (days of the week and times).
-Assignment & Exam Tracker: A powerful to-do list for academic work. Users can add assignments, link them to a specific course, and set due dates with validation that prevents selecting past dates.
-Digital Notebooks: A complete, two-pane note-taking system integrated with the course management feature. Users can create, edit, and delete detailed notes for each course they are enrolled in.
-Pomodoro Timer: A built-in study tool to promote focus, featuring customizable durations for work and break sessions. The timer's state is saved in the browser, allowing it to persist across page refreshes.
-3. Planning Dashboard
-This section focuses on personal organization and long-term goals.
-Daily Planner: A date-driven to-do list for non-academic tasks. Users can select any day and manage a unique list of tasks, with the ability to mark them as complete.
-Annual Goals: A dedicated space for setting and tracking long-term goals. Goals can be created with detailed descriptions, assigned to categories (e.g., Personal, Career), and their progress can be tracked by updating their status.
-4. Finance Dashboard
-A simple yet effective suite of tools for managing student finances.
-Account & Subscription Tracking: Users can create multiple financial accounts and track recurring monthly subscriptions, with the dashboard automatically calculating total balances and monthly costs.
-Transaction Logging: The core feature, allowing users to log income and expense transactions. When a transaction is logged against a specific account, the backend logic automatically and accurately updates the account's balance.
-5. AI Study Assistant
-The standout feature that transforms Orbit into an intelligent study partner.
-Seamless Integration: The assistant automatically gathers all notes a user has written for a selected course to use as its knowledge base.
-Four Powerful Functions:
-Generate Summary: Condenses all notes for a course into a concise summary.
-Extract Key Concepts: Identifies and defines the most important terms.
-Create Practice Quiz: Generates multiple-choice questions based on the notes.
-Generate Flashcards: Creates question-and-answer pairs for quick revision.
-Secure Implementation: All AI processing is handled on the backend, ensuring the secret API key is never exposed to the user's browser.
-Technical Architecture
-Orbit is built using a modern, decoupled, three-tier architecture.
-Frontend (Client): A dynamic Single-Page Application (SPA) built with Angular. It is responsible for rendering the UI and communicating with the backend via HTTPS API requests. It is deployed on Vercel for optimal performance and global availability.
-Backend (Server): A secure RESTful API built with Node.js and Express.js. It handles all business logic, user authentication, and data processing. It is deployed on Render for reliable and scalable server management.
-Database: A MongoDB NoSQL database hosted on MongoDB Atlas. It provides a flexible and scalable solution for storing all user and application data.
-This separation of concerns ensures that the application is secure, maintainable, and scalable.
-Technology Stack
-Backend
-Runtime: Node.js
-Framework: Express.js
-Database: MongoDB with Mongoose ODM
-Authentication: JSON Web Tokens (JWT)
-API Testing: Postman
-Frontend
-Framework: Angular
-Language: TypeScript
-State Management: RxJS (Observables, BehaviorSubject)
-Forms: Angular Reactive Forms & Template-Driven Forms
-Styling: CSS with a custom design system based on CSS Variables
-Deployment
-Frontend: Vercel
-Backend: Render
-Database: MongoDB Atlas
-Getting Started
-To run this project locally, you will need two terminals.
-Backend Setup
-Navigate to the backend directory.
-Run npm install to install all dependencies.
-Create a .env file and add your MONGO_URI, JWT_SECRET, and GEMINI_API_KEY.
-Run npm run dev to start the server.
-Frontend Setup
-Navigate to the frontend directory.
-Run npm install to install all dependencies.
-Run ng serve to start the development server.
-Open your browser to http://localhost:4200.
-API Endpoints
-The backend exposes a comprehensive REST API for all application features. All endpoints under /api/academic, /api/planning, /api/finance, and /api/ai are protected by JWT authentication.
-POST /api/auth/register
-POST /api/auth/login
-GET, POST /api/academic/courses
-PUT, DELETE /api/academic/courses/:id
-GET, POST /api/academic/assignments
-PUT, DELETE /api/academic/assignments/:id
-...and many more for Notes, Tasks, Goals, Finances, and AI.
-Conclusion
-Orbit is a complete and robust full-stack application that demonstrates a wide range of modern web development skills, from backend API design and security to complex frontend state management and UI/UX design. It serves as a powerful testament to the capabilities of the MEAN stack in building real-world, feature-rich applications.
+
+Orbit is a comprehensive, full-stack web application designed from the ground up to be the definitive organizational tool for students. In the modern academic environment, a student's digital life is often fragmented across multiple platforms for scheduling, budgeting, task management, and note-taking. This project was built to solve that challenge by integrating these critical functions into a single, cohesive, and beautifully designed dashboard.
+
+From high-level academic planning and financial tracking to daily task management and AI-powered study assistance, Orbit provides a unified solution to enhance student productivity and organization.
+
+---
+
+##  Key Features
+
+The application is built around a secure user authentication system, providing a personalized and private dashboard for each student.
+
+### For All Users
+-    Secure Authentication & Branded Home Page:** A professional landing page serves as the authentication hub, featuring distinct, elegantly designed forms for user login and registration with robust, real-time validation. The entire application is secured with JSON Web Tokens (JWT).
+-    Academically focused study sessions, and digital notebooks for organizing notes with rich content support (text, images, links).
+-    Comprehensive Planning Dashboard:** This section extends beyond academics with a date-driven daily planner for life tasks and a dedicated space for setting and tracking long-term annual goals.
+-    Intuitive Finance Dashboard:** A simple yet effective suite of tools for managing student finances, including account and subscription tracking with automated balance calculations and transaction logging.
+
+### The AI Study Assistant (Standout Feature)
+-    Seamless Integration: The assistant automatically gathers all notes a user has written for a selected course to use as its knowledge base.
+-    Four Powerful Functions:
+    1.  Generate Summary: Condenses all notes for a course into a concise, high-level summary.
+    2.  Extract Key Concepts: Identifies and defines the most important terms from the notes.
+    3.  Create Practice Quiz: Generates multiple-choice questions to help the user test their knowledge.
+    4.  Generate Flashcards: Creates question-and-answer pairs perfect for quick revision.
+-    Secure Implementation: All AI processing is handled on the backend via a secure, server-to-server API call, ensuring the secret third-party API key is never exposed.
+
+---
+
+##  Tech Stack
+
+| Category | Technology |
+| :--- | :--- |
+| **Frontend** | Angular, TypeScript, RxJS, Reactive Forms |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB (with Mongoose & MongoDB Atlas) |
+| **Authentication**| JWT (JSON Web Tokens), bcrypt |
+| **API Integration** | Google Generative AI (Gemini) or OpenAI |
+
+---
+
+##  Getting Started
+
+Follow these instructions to get a local copy of the project up and running.
+
+### Prerequisites
+-   [Node.js](https://nodejs.org/) (v18.x or later recommended)
+-   [Angular CLI](https://angular.io/cli) installed globally (`npm install -g @angular/cli`)
+-   A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) account
+-   An API Key from either [Google AI Studio](https://aistudio.google.com/) or the [OpenAI Platform](https://platform.openai.com/)
+
+### Installation Guide
+
+1.  **Clone the repositories:**
+    ```bash
+    # Clone the backend
+    git clone https://github.com/dharanesh-vn/orbit-backend-repo.git
+    # Clone the frontend
+    git clone https://github.com/dharanesh-vn/orbit-frontend-repo.git
+    ```
+
+2.  **Setup the Backend:**
+    ```bash
+    cd orbit-backend-repo
+    npm install
+    ```
+    -   Create a `.env` file in the `backend` root directory.
+    -   Add your MongoDB Atlas connection string, a JWT secret, and your chosen AI API key.
+
+    **.env file structure:**
+    ```
+    MONGO_URI=your_mongodb_connection_string
+    JWT_SECRET=your_super_secret_key
+    GEMINI_API_KEY=your_google_ai_api_key_here
+    ```
+
+3.  **Setup the Frontend:**
+    ```bash
+    cd ../orbit-frontend-repo
+    npm install
+    ```
+
+### Running the Application
+
+You will need two separate terminals to run both the frontend and backend servers.
+
+1.  **Run the Backend Server:**
+    ```bash
+    cd orbit-backend-repo
+    npm run dev
+    ```
+    The server will be running on `http://localhost:5000`.
+
+2.  **Run the Frontend Application:**
+    ```bash
+    cd orbit-frontend-repo
+    ng serve
+    ```
+    The application will be available at `http://localhost:4200`.
+
+---
+
+## Conclusion
+
+Orbit is a complete and robust full-stack application that demonstrates a wide range of modern web development skills, from backend API design and security to complex frontend state management and polished UI/UX design. It serves as a powerful testament to the capabilities of the MEAN stack in building real-world, feature-rich, and intelligent applications.
